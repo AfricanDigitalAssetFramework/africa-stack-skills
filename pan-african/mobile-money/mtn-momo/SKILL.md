@@ -166,12 +166,7 @@ Body:
 - `payerMessage`: Message shown to payer
 - `payeeNote`: Note stored in payee's transaction history
 
-**Response:** 202 Accepted
-```json
-{
-  "financialTransactionId": "1633100230"
-}
-```
+**Response:** 202 Accepted — empty body. The response carries no JSON. Use the `X-Reference-Id` value you sent in the request header to subsequently query status.
 
 #### Get Request Status
 
@@ -240,12 +235,7 @@ Body:
 }
 ```
 
-**Response:** 202 Accepted
-```json
-{
-  "financialTransactionId": "1633100240"
-}
-```
+**Response:** 202 Accepted — empty body. Use the `X-Reference-Id` you sent to query status.
 
 #### Get Disbursement Status
 

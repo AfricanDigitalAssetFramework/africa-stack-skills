@@ -133,9 +133,11 @@ Initiate a payment request from a customer. The customer will be prompted to ent
     "currency": "KES",
     "id": "TXN-12345",
     "type": "MerchantPayment"
-  },
-  "pin": "1234"
+  }
 }
+```
+
+**Important:** Do **not** include a `pin` field in the request body. The customer's PIN is entered by the customer themselves in the Airtel Money app or USSD flow — it is never sent by the merchant. Including a merchant-provided PIN in the request is a security design error.
 ```
 
 **Response (Success - 200)**:
@@ -403,7 +405,7 @@ async function collectPayment(msisdn, amount, reference) {
         id: reference,
         type: 'MerchantPayment'
       },
-      pin: '1234' // Optional, depends on merchant configuration
+      // Note: do NOT include a pin field — customer enters PIN in their Airtel Money app/USSD
     })
   });
 
