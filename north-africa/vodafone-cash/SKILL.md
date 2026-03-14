@@ -29,7 +29,7 @@ This approach ensures compliance, reduces onboarding complexity, and provides un
 Most aggregators use API keys for authentication. Here's the typical flow using Paymob as an example:
 
 ```
-POST https://accept.paymobsolutions.com/api/auth/tokens
+POST https://accept.paymob.com/api/auth/tokens
 Body:
 {
   "api_key": "YOUR_PAYMOB_API_KEY"
@@ -43,7 +43,7 @@ Response:
 
 Store your API keys securely in environment variables. Never hardcode credentials.
 
-**Base URL (Paymob):** `https://accept.paymobsolutions.com/api`
+**Base URL (Paymob):** `https://accept.paymob.com/api`
 
 ## Core Integration Patterns
 
@@ -206,20 +206,18 @@ Response:
 Fawry is another popular aggregator for Vodafone Cash in Egypt.
 
 ```
-POST https://www.fawry.com/api/v2/charges/create
+POST https://www.atfawry.com/ECommerceWeb/Fawry/payments/charge
 Content-Type: application/json
 
 Body:
 {
   "merchantCode": "YOUR_MERCHANT_CODE",
-  "merchantRefNumber": "ORD-2025-12345",
+  "merchantRefNum": "ORD-2025-12345",
   "customerProfileId": "CUSTOMER_ID",
-  "amount": 50.00,
-  "currencyCode": "EGP",
-  "description": "Product purchase",
-  "paymentMethod": "VODAFONE_CASH",
+  "paymentMethod": "MWALLET",
   "customerMobile": "+201234567890",
   "customerEmail": "customer@email.com",
+  "customerName": "Ahmed Hassan",
   "chargeItems": [
     {
       "itemId": "PROD-123",
@@ -228,11 +226,13 @@ Body:
       "quantity": 1
     }
   ],
+  "currencyCode": "EGP",
+  "paymentExpiry": 1737072000000,
   "signature": "CALCULATED_SIGNATURE"
 }
 ```
 
-Signature is HMAC-SHA256 of: `merchantCode + merchantRefNumber + amount + chargeItems[0].itemId + signature_key`
+Signature is plain **SHA-256** (not HMAC) of: `merchantCode + merchantRefNum + customerProfileId + paymentMethod + amount.toFixed(2) + securityKey`
 
 ## Real Payment Flow: SMS Authorization
 
@@ -291,7 +291,7 @@ const hmacSignature = crypto
   .update(JSON.stringify(req.body))
   .digest('hex');
 
-if (hmacSignature === req.headers['x-hmacssha256']) {
+if (hmacSignature === req.headers['x-hmac-sha256']) {
   // Valid webhook
   console.log('Payment confirmed:', req.body.obj);
 }

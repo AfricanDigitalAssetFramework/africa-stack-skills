@@ -392,14 +392,13 @@ Common errors and how to handle them:
 
 ## Amount Format
 
-**All amounts are in Egyptian Pounds (EGP), not piasters.**
+Amount units **depend on the aggregator**:
 
-The old HMAC-SHA256 example was misleading; modern aggregators use API keys and OAuth tokens, not HMAC signatures for client requests. Only use HMAC for webhook verification.
+- **Paymob** — amounts are in **piasters** (`amount_cents`). 1 EGP = 100 piasters. EGP 50 = 5000.
+- **OPay** — verify with OPay docs; examples show whole-unit amounts.
+- **PayTabs** — verify with PayTabs docs; typically whole currency units.
 
-Example amount conversions:
-- EGP 50 = 50 (not 5000)
-- EGP 500 = 500
-- EGP 5,000 = 5000
+Always check your chosen aggregator's documentation. Do not assume a single unit applies across all paths.
 
 ## Important Notes / Gotchas
 
