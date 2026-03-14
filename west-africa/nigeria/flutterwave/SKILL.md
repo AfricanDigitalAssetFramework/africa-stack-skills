@@ -254,24 +254,15 @@ POST /virtual-cards
 
 ## Webhooks
 
-Set your webhook URL in the Flutterwave dashboard. Verify with the secret hash using HMAC-SHA256:
+Set your webhook URL in the Flutterwave dashboard. Verify with the secret hash:
+
+The `verif-hash` header Flutterwave sends is the literal secret hash value configured in your dashboard. Compare it directly — it is **not** an HMAC digest.
 
 ```javascript
-const crypto = require('crypto');
 const secretHash = process.env.FLW_SECRET_HASH;
 const signature = req.headers['verif-hash'];
-const rawBody = req.rawBody; // Get raw request body before parsing
 
-if (!signature || signature === '') {
-  return res.status(401).send('Unauthorized');
-}
-
-const hash = crypto
-  .createHmac('sha256', secretHash)
-  .update(rawBody)
-  .digest('base64');
-
-if (hash !== signature) {
+if (!signature || signature !== secretHash) {
   return res.status(401).send('Unauthorized');
 }
 
@@ -321,7 +312,7 @@ Implement exponential backoff for 429/503 errors and always retry failed request
 
 ### FLW_SECRET_KEY vs Secret Hash
 - **`FLWSECK_` key**: Your API authentication secret for making requests to the API (goes in Authorization header)
-- **`FLW_SECRET_HASH`**: Your webhook secret for verifying incoming webhooks (different value, used for HMAC-SHA256 signature)
+- **`FLW_SECRET_HASH`**: Your webhook verification hash configured in the dashboard. Flutterwave sends this exact value in the `verif-hash` header with every webhook. Compare directly — no HMAC computation required.
 - These are two separate keys set in your Flutterwave dashboard
 
 ### Country-Specific Payment Methods

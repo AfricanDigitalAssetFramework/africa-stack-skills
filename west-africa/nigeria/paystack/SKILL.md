@@ -378,7 +378,7 @@ Paystack returns consistent error shapes:
 
 All amounts in the Paystack API are in the smallest currency unit:
 - **NGN (Nigeria):** 1 kobo = 1/100 NGN. Send 50000 for ₦500.
-- **GHS (Ghana):** 1 pesewa = 1/100 GHS. Send 50000 for ₦500.
+- **GHS (Ghana):** 1 pesewa = 1/100 GHS. Send 50000 for GHS 500.
 - **ZAR (South Africa):** 1 cent = 1/100 ZAR. Send 5000 for R50.
 - **KES (Kenya):** 1 cent = 1/100 KES. Send 5000 for Ksh50.
 

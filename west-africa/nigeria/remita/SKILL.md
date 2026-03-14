@@ -24,7 +24,7 @@ API-Key: {your_api_key}
 Obtain credentials from your Remita merchant dashboard. Store them in environment variables like `REMITA_API_KEY` and `REMITA_ACCESS_TOKEN`. Never hardcode credentials.
 
 **Base URL:** `https://api.remita.net/api/v1`
-**Sandbox URL:** `https://demo.remita.net/api/v1`
+**Sandbox URL:** `https://demo.remita.net/api/v1` <!-- TODO: verify — the legacy Remita sandbox is at remitademo.net; confirm current REST API sandbox URL with Remita developer portal -->
 
 **Token Generation:**
 
@@ -410,7 +410,7 @@ For bulk operations, always check individual transaction statuses even if the ba
 ## Important Notes and Gotchas
 
 - **RRR is king:** The Remita Retrieval Reference is the primary identifier for all payment transactions. Store it alongside your internal order ID.
-- **Bank codes:** Use standard Nigerian bank codes (033 = First Bank, 044 = Access Bank, 058 = GTBank, 057 = Zenith, 011 = First Bank). Use the bank lookup endpoint to get current codes.
+- **Bank codes:** Use standard Nigerian bank codes (011 = First Bank of Nigeria, 033 = UBA, 044 = Access Bank, 058 = GTBank, 057 = Zenith). Use the bank lookup endpoint to get current codes.
 - **Account numbers:** Must be exactly 10 digits for Nigerian NUBAN accounts. Validate before submission.
 - **Treasury Single Account (TSA):** Remita is the official platform for Nigerian government TSA collections. If you're building government payment integrations, Remita is mandatory.
 - **Bulk processing:** Batches are processed asynchronously. Individual transactions may settle at different times. Never assume all-or-nothing completion.
