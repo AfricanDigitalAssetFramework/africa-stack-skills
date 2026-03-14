@@ -189,9 +189,13 @@ Thank you for using our service.
 
 Make outbound voice calls with IVR (Interactive Voice Response) capabilities using XML-based responses.
 
+Voice uses a **separate subdomain** from the main API:
+- **Live:** `https://voice.africastalking.com/call`
+- **Sandbox:** `https://voice.sandbox.africastalking.com/call`
+
 **Endpoint:**
 ```
-POST /version1/voice/call
+POST https://voice.africastalking.com/call
 ```
 
 **Headers:**
@@ -546,13 +550,15 @@ Check your account balance and available credit.
 
 **Endpoint:**
 ```
-GET /version1/user
+GET /version1/user?username=YOUR_USERNAME
 ```
 
 **Headers:**
 ```
 Authorization: Bearer {api_key}
 ```
+
+The `username` query parameter is required.
 
 **Response:**
 ```json

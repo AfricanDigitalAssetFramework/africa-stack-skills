@@ -108,7 +108,7 @@ Content-Type: application/json
 | service_code | string | Yes | Service identifier (use "GenericService" for basic payments) |
 | currency_code | string | Yes | 3-letter ISO currency code (KES, NGN, GHS, UGX, TZS, RWF, ZMW, BWP) |
 | country_code | string | Yes | 2-letter ISO country code (KE, NG, GH, UG, TZ, RW, ZM, BW) |
-| request_amount | integer | Yes | Amount in smallest currency unit (cents/pesewa). Whole numbers only. |
+| request_amount | integer | Yes | Amount in smallest currency unit (cents/pesewa). Whole numbers only. <!-- TODO: verify — M-Pesa in KES does not use sub-unit "cents"; confirm with Tingg docs whether KES amounts are in whole shillings or in cents --> |
 | customer_email | string | Yes | Payer's email address |
 | customer_first_name | string | Yes | Payer's first name |
 | customer_last_name | string | Yes | Payer's last name |
@@ -649,9 +649,10 @@ Tingg operates across 25+ African countries with 283+ payment methods:
    - Use timestamp + random suffix: `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
 2. **Amount Precision**
-   - Amounts are in smallest currency unit (cents, pesewa, etc.)
-   - Use integers only—no decimals
-   - KES 15.00 = 1500, GHS 0.50 = 50
+   - Amounts are integers (no decimals)
+   - KES: verify whether 1500 means KES 15.00 (cents) or KES 1,500 (whole shillings); Tingg may use whole shilling units for mobile money channels
+   - GHS 0.50 = 50 pesewas
+   <!-- TODO: confirm exact KES unit with https://docs.tingg.africa before production -->
 
 3. **Phone Number Format**
    - Must include country code with + prefix
