@@ -241,8 +241,8 @@ Retrieve all banks and their CBN codes supported by Interswitch for transfers.
   "data": [
     {
       "bankCode": "033",
-      "bankName": "First Bank of Nigeria",
-      "bankSlug": "first-bank",
+      "bankName": "United Bank for Africa (UBA)",
+      "bankSlug": "uba",
       "isActive": true
     },
     {
@@ -252,15 +252,15 @@ Retrieve all banks and their CBN codes supported by Interswitch for transfers.
       "isActive": true
     },
     {
-      "bankCode": "007",
+      "bankCode": "044",
       "bankName": "Access Bank",
       "bankSlug": "access-bank",
       "isActive": true
     },
     {
       "bankCode": "050",
-      "bankName": "Fidelity Bank",
-      "bankSlug": "fidelity-bank",
+      "bankName": "Ecobank",
+      "bankSlug": "ecobank",
       "isActive": true
     }
   ]

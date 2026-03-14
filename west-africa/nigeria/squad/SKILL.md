@@ -296,7 +296,7 @@ Send money from your Squad balance to any Nigerian bank account. Squad verifies 
 **Field Definitions:**
 - `amount` (required, integer): Payout amount in **kobo** (₦1,000 = 100000 kobo)
 - `currency` (required, string): Must be `"NGN"` (Nigerian Naira)
-- `bank_code` (required, string): 3-digit Nigerian bank code (e.g., `"058"` for GTBank, `"033"` for UBA, `"007"` for Access Bank)
+- `bank_code` (required, string): 3-digit Nigerian bank code (e.g., `"058"` for GTBank, `"033"` for UBA, `"044"` for Access Bank)
 - `account_number` (required, string): 10-digit NUBAN account number (must be validated using account lookup before payout)
 - `account_name` (required, string): Beneficiary account name (as returned by account lookup)
 - `narration` (optional, string): Description visible to the beneficiary in their bank statement
@@ -308,10 +308,10 @@ Send money from your Squad balance to any Nigerian bank account. Squad verifies 
 |-----------|------|
 | Guaranty Trust Bank (GTBank) | 058 |
 | United Bank for Africa (UBA) | 033 |
-| Zenith Bank | 050 |
-| First Bank | 011 |
+| Zenith Bank | 057 |
+| First Bank of Nigeria | 011 |
 | Access Bank | 044 |
-| FCMB | 070 |
+| FCMB | 214 |
 | Ecobank | 050 |
 | Stanbic IBTC | 221 |
 
@@ -1313,11 +1313,11 @@ Always use valid 3-digit CBN bank codes:
 
 - **058** - Guaranty Trust Bank (GTBank)
 - **033** - United Bank for Africa (UBA)
-- **050** - Zenith Bank
-- **011** - First Bank
+- **057** - Zenith Bank
+- **011** - First Bank of Nigeria
 - **044** - Access Bank
-- **070** - FCMB
-- **051** - Ecobank
+- **214** - FCMB
+- **050** - Ecobank
 - **221** - Stanbic IBTC Bank
 
 Invalid codes cause payout failures. Use the complete bank code list from [CBN documentation](https://docs.prembly.com/docs/cbn-bank-codes).
