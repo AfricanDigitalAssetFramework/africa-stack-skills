@@ -105,11 +105,13 @@ initial_payment=0
 cycle_period=3
 ```
 
-**Frequency & Cycle Values:**
-- `1` = Monthly
-- `3` = Quarterly
-- `6` = Bi-annually
-- `12` = Annually
+**Frequency Values (`frequency` field):**
+- `3` = Monthly
+- `4` = Quarterly
+- `5` = Semi-annually (bi-annually)
+- `6` = Annually
+
+Note: Values 1 and 2 represent per-hour and daily billing (uncommon). `12` is not a valid frequency code.
 
 **Example Subscription Form:**
 ```html

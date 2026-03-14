@@ -17,6 +17,12 @@ Stitch uses OAuth 2.0 with client credentials:
 
 ### Get Access Token
 
+<!-- TODO: verify auth method — Stitch documentation recommends JWT client assertion
+(RS256 signed JWT using a Stitch-issued X.509 certificate + private key) for
+client credentials, not a plain client_secret. If your account uses client_secret,
+this works; if not, see https://docs.stitch.money/authentication/client-tokens
+for the certificate-based flow -->
+
 ```
 POST https://secure.stitch.money/connect/token
 Content-Type: application/x-www-form-urlencoded

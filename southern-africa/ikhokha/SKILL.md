@@ -53,7 +53,9 @@ export IK_ENTITYID=your_entity_id
 - For multi-location merchants, you may manage locations separately within a single account or use location identifiers in API calls
 - Never commit credentials to version control; use environment variables or secure secret management
 
-**Base URL:** `https://dev.ikhokha.com/api`
+**Base URL (development):** `https://dev.ikhokha.com/api`
+
+<!-- TODO: confirm production base URL — developer.ikhokha.com or another host; the dev URL above is for testing only -->
 
 ## Core API Reference
 
@@ -72,7 +74,7 @@ export IK_ENTITYID=your_entity_id
 Generate a payment link that customers can click to pay online.
 
 ```
-POST /api/paymentLink
+POST /paymentLink
 ```
 
 **Headers:**
@@ -128,7 +130,7 @@ Content-Type: application/json
 Retrieve the current status of a payment link.
 
 ```
-GET /api/paymentLink/{paylinkID}
+GET /paymentLink/{paylinkID}
 ```
 
 **Response (Pending):**
