@@ -129,7 +129,7 @@ POST /Transfer/SingleFund
 **Key details:**
 - `amount` is in kobo (50000 = ₦500)
 - `reference` is idempotent — resubmit the same reference if the first request fails without duplicating transfers
-- `destinationBankCode` is the receiving bank's code (058=GTB, 033=FirstBank, 011=First City, etc.)
+- `destinationBankCode` is the receiving bank's code (058=GTB, 033=UBA, 011=First Bank of Nigeria, etc.)
 - `trackingRef` must be unique per request
 
 **Response:**
@@ -387,7 +387,7 @@ For transfers, **always check the `status` field** in response data. A `success:
 
 **1. Kobo units:** All amounts are in kobo (100 kobo = ₦1). ₦500 = 50000 kobo. Double-check conversions.
 
-**2. Bank codes:** Standard CBN codes must be exact (058=GTB, 033=FirstBank, 011=First City, 035=Wema, 050=ecoBank). Invalid codes fail transfers silently.
+**2. Bank codes:** Standard CBN codes must be exact (011=First Bank of Nigeria, 033=UBA, 035=Wema, 044=Access, 050=Ecobank, 057=Zenith, 058=GTB). Invalid codes fail transfers silently.
 
 **3. Tracking references:** `trackingRef` enables idempotency — keep them unique globally per request. Reuse for retries, but changing `trackingRef` creates new operations.
 

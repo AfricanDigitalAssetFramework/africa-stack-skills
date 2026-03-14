@@ -272,6 +272,7 @@ Validate a bank account before disbursing to confirm the account name.
 ```
 GET /api/v1/transactions/verify-account?bank_code=058&account_number=0123456789
 ```
+<!-- TODO: verify exact path — some Korapay integrations use /api/v1/misc/banks/resolve; confirm with https://docs.korapay.com -->
 
 **Query Parameters:**
 - `bank_code`: 3-digit bank code
