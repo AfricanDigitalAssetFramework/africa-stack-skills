@@ -128,7 +128,7 @@ All OnePipe requests follow this structure:
     },
     "meta": {
       "account_number": "0123456789",
-      "bank_code": "050",
+      "bank_code": "076",
       "account_bank": "Polaris Bank"
     },
     "details": {
@@ -180,7 +180,7 @@ Creates a new business account at a partner bank.
   "message": "Account opened successfully",
   "data": {
     "account_number": "0123456789",
-    "bank_code": "050",
+    "bank_code": "076",
     "bank_name": "Polaris Bank",
     "account_name": "Jane Smith",
     "account_reference": "acct_ref_12345"
@@ -222,7 +222,7 @@ Retrieve all accounts associated with a customer.
     "accounts": [
       {
         "account_number": "0123456789",
-        "bank_code": "050",
+        "bank_code": "076",
         "bank_name": "Polaris Bank",
         "account_name": "Jane Smith",
         "account_type": "BUSINESS"
@@ -257,7 +257,7 @@ Debit funds from a customer's account.
     },
     "meta": {
       "account_number": "0123456789",
-      "bank_code": "050"
+      "bank_code": "076"
     },
     "details": {
       "beneficiary_name": "Vendor Inc",
@@ -306,7 +306,7 @@ Retrieve account statement/transaction history.
     },
     "meta": {
       "account_number": "0123456789",
-      "bank_code": "050",
+      "bank_code": "076",
       "from_date": "2024-01-01",
       "to_date": "2024-02-29",
       "page": 1,
@@ -488,7 +488,7 @@ To receive webhooks:
     "currency": "NGN",
     "customer_ref": "cust_12345",
     "account_number": "0123456789",
-    "bank_code": "050",
+    "bank_code": "076",
     "meta": {
       "provider": "polaris",
       "provider_reference": "NIP123456789"
@@ -723,7 +723,7 @@ async function handleOnePipeError(error, transaction) {
 
 7. **Account Opening Has Prerequisites**: The `open_account` endpoint requires customer identity verification (NIN/BVN lookup) before account creation in most cases. Verify identity first, then create accounts. Some banks may have additional KYC requirements that delay account activation.
 
-8. **Bank Codes Are Required for Transfers**: When specifying destination accounts for transfers, always include the correct NIBSS bank code (e.g., "050" for Polaris). Invalid bank codes will cause transaction failures. Maintain a mapping of bank names to official NIBSS codes.
+8. **Bank Codes Are Required for Transfers**: When specifying destination accounts for transfers, always include the correct NIBSS bank code (e.g., "076" for Polaris Bank (note: 050 is Ecobank, Polaris Bank is 076)). Invalid bank codes will cause transaction failures. Maintain a mapping of bank names to official NIBSS codes.
 
 9. **Mock Mode for Testing**: During integration, requests can include `mock_mode: true` in the transaction object to use the test Postman environment. The integration team provides a mock base URL for non-live testing. Never use mock_mode in production.
 

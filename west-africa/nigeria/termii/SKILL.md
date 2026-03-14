@@ -116,7 +116,7 @@ POST /api/sms/otp/send
   "api_key": "your_api_key",
   "message_type": "ALPHANUMERIC",
   "message_text": "Your verification code is {code}. Valid for 10 minutes.",
-  "code_length": 6,
+  "pin_length": 6,
   "pin_attempts": 3,
   "pin_time_to_live": 600,
   "pin_placeholder": "{code}",
@@ -126,7 +126,7 @@ POST /api/sms/otp/send
 
 **Key parameters:**
 - `message_text`: Custom message with `{code}` placeholder where OTP will be inserted
-- `code_length`: Length of generated code (typically 4-8 digits)
+- `pin_length`: Length of generated code (typically 4-8 digits)
 - `pin_time_to_live`: Expiry time in seconds (600 = 10 minutes)
 - `pin_attempts`: Maximum verification attempts before code expires (3-5 recommended)
 - `pin_type`: "NUMERIC" for digits only, "ALPHANUMERIC" for mixed

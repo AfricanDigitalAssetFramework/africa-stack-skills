@@ -34,7 +34,7 @@ AppId: your_app_id
 
 API credentials are generated in your Dojah dashboard. Store in environment variables (`DOJAH_API_KEY`, `DOJAH_APP_ID`). Never hardcode credentials in source code.
 
-**Base URL:** `https://api.dojah.io/api/v1/kyc/`
+**Base URL:** `https://api.dojah.io`
 
 **Environments:**
 - **Sandbox**: For testing with test data
@@ -48,35 +48,58 @@ API credentials are generated in your Dojah dashboard. Store in environment vari
 
 Validate customer identity using their BVN, which is linked to Nigerian bank accounts.
 
-#### BVN Match
+#### BVN Basic Lookup
 ```
-GET /api/v1/kyc/bvn?bvn=22222222222&first_name=John&last_name=Doe
+GET /api/v1/kyc/bvn?bvn=22222222222
 ```
 
 **Parameters:**
-- `bvn`: 11-digit Bank Verification Number
-- `first_name`: Customer's first name
-- `last_name`: Customer's last name
-- `middle_name`: (optional) Customer's middle name
+- `bvn` (required): 11-digit Bank Verification Number
 
 **Response:**
 ```json
 {
-  "status": "success",
-  "data": {
+  "entity": {
     "bvn": "22222222222",
-    "first_name": "John",
-    "last_name": "Doe",
-    "middle_name": "Oluwatoyin",
-    "phone_number": "+2348012345678",
+    "first_name": "JOHN",
+    "last_name": "DOE",
+    "middle_name": "OLUWATOYIN",
+    "phone_number1": "08012345678",
     "gender": "Male",
     "date_of_birth": "1990-05-15",
     "email": "john.doe@example.com",
-    "registration_at": "2015-03-10",
-    "matched": true
+    "registration_date": "2015-03-10",
+    "nationality": "Nigeria",
+    "state_of_residence": "Lagos"
   }
 }
 ```
+
+Note: response wraps in `entity`, not `data`. No `matched` field is returned for basic lookup.
+
+#### BVN Validate (Name + DOB Match)
+```
+GET /api/v1/kyc/bvn/advance?bvn=22222222222&first_name=John&last_name=Doe&dob=1990-05-15
+```
+
+**Parameters:**
+- `bvn` (required): 11-digit Bank Verification Number
+- `first_name` (required): First name to match
+- `last_name` (required): Last name to match
+- `dob` (required): Date of birth in YYYY-MM-DD format
+
+**Response:**
+```json
+{
+  "entity": {
+    "bvn": { "value": "22222222222", "status": true },
+    "first_name": { "confidence_value": 100, "status": true },
+    "date_of_birth": { "status": true }
+  }
+}
+```
+
+Use this endpoint (not the basic lookup) when you need to confirm a name matches the BVN on record.
 
 #### BVN Full Lookup
 ```
@@ -85,50 +108,39 @@ GET /api/v1/kyc/bvn/full?bvn=22222222222
 
 Returns comprehensive BVN data including banking relationships and verification history.
 
-#### BVN Advanced/Premium
-```
-GET /api/v1/kyc/bvn/advance?bvn=22222222222
-```
-
-Provides advanced verification with enhanced fraud detection and risk scoring.
-
 ### NIN Verification (National Identification Number)
 
 Validate identity using Nigeria's national ID system.
 
 #### Basic NIN Lookup
 ```
-GET /api/v1/kyc/nin?nin=12345678901&first_name=Amina&last_name=Okafor
+GET /api/v1/kyc/nin?nin=12345678901
 ```
 
 **Parameters:**
-- `nin`: 11-digit National Identification Number
-- `first_name`: Customer's first name
-- `last_name`: Customer's last name
-- `middle_name`: (optional) Customer's middle name
+- `nin` (required): 11-digit National Identification Number
 
 **Response:**
 ```json
 {
-  "status": "success",
-  "data": {
+  "entity": {
     "nin": "12345678901",
     "first_name": "Amina",
     "last_name": "Okafor",
     "middle_name": "Chioma",
-    "phone_number": "+2348087654321",
-    "email": "amina@example.com",
-    "gender": "Female",
-    "date_of_birth": "1990-05-15",
-    "state_of_residence": "Lagos",
-    "lga_of_residence": "Ikoyi",
-    "nationality": "Nigerian",
+    "phone": "08087654321",
+    "gender": "f",
+    "birthdate": "1990-05-15",
+    "state": "Lagos",
+    "lga": "Ikoyi",
+    "nationality": "Nigeria",
     "marital_status": "Single",
-    "occupation": "Software Engineer",
-    "matched": true
+    "profession": "Software Engineer"
   }
 }
 ```
+
+Note: response wraps in `entity`, not `data`. No `matched` field is returned; use `/api/v1/kyc/nin/verify` if you need name-match confirmation.
 
 #### VNIN (Virtual NIN)
 ```
@@ -234,16 +246,16 @@ GET /api/v1/kyc/easy?identifier=phone_number_or_nin_or_bvn
 
 ### New User Onboarding
 1. Collect BVN or NIN from user during signup
-2. Call BVN Match or NIN Lookup endpoint
-3. Verify `matched: true` and data consistency
-4. Request selfie for biometric verification
-5. Call Liveness Check endpoint
+2. Call BVN Basic Lookup (`GET /api/v1/kyc/bvn`) or NIN Lookup (`GET /api/v1/kyc/nin`)
+3. Compare returned `entity` fields (name, DOB) against what the user provided
+4. For name-match confirmation use BVN Validate (`GET /api/v1/kyc/bvn/advance`)
+5. Request selfie for biometric verification → `POST /api/v1/kyc/liveness`
 6. Store verification status and timestamp in database
 
 ### Fintech App Verification
 1. User submits NIN during KYC flow
-2. `GET /api/v1/kyc/nin` validates identity
-3. Compare returned name/email with signup data
+2. `GET /api/v1/kyc/nin?nin=...` validates identity; response in `entity` field
+3. Compare returned name/DOB with signup data
 4. Request selfie if data matches
 5. `POST /api/v1/kyc/liveness` performs biometric check
 6. Mark customer as verified if liveness score >95%
@@ -296,7 +308,7 @@ Dojah returns structured error responses:
 - **Rate Limiting**: Dojah enforces rate limits. Cache results and avoid repeated checks for same user.
 - **Data Privacy**: Identity data and biometric images are sensitive. Never log unencrypted or store images without encryption.
 - **Compliance**: Dojah verification supports regulatory compliance for financial services (CBN, FIRS requirements).
-- **Matched Field**: Always verify `matched: true` before accepting verification result.
+- **Match Verification**: Basic BVN/NIN lookups return the raw profile in `entity` (no `matched` field). Use `GET /api/v1/kyc/bvn/advance` (requires first_name, last_name, dob) for field-level match confirmation with per-field `status` booleans.
 - **Sandbox Testing**: Use sandbox environment and test BVN `22222222222` for development.
 - **Multi-Country**: Dojah supports Kenya (KRA PIN) and other African markets beyond Nigeria.
 
