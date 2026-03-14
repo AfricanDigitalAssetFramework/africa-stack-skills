@@ -393,6 +393,8 @@ Api-Key: {your_api_key}
 
 **Supported Banks:** All KBA (Kenya Bankers Association) member banks plus mobile money providers.
 
+<!-- TODO: verify bank code format — Jenga uses bank sort codes, not CBK codes; use GET /v3-apis/bank-api/v3.0/banks endpoint (if available) to resolve correct codes at integration time -->
+
 Processing time: Usually within 1-2 hours.
 
 ### PesaLink Mobile Transfer

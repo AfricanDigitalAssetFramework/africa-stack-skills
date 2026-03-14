@@ -372,6 +372,7 @@ Content-Type: application/json
 109 - Mwalimu National SACCO
 110 - Nairobi City SACCO
 ```
+<!-- TODO: verify these bank codes against the NCBA Loop bank lookup endpoint or CBK list — Kenyan sort codes differ from CBK institution codes; confirm with NCBA support before using in production -->
 
 ### Transaction History
 

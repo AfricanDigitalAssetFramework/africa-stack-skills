@@ -111,7 +111,7 @@ Before submitting order requests, register a webhook URL where Pesapal will send
 
 **Endpoint:**
 ```
-POST /Notifications
+POST /URLSetup/RegisterIPN
 Authorization: Bearer {token}
 ```
 
@@ -119,22 +119,23 @@ Authorization: Bearer {token}
 ```json
 {
   "url": "https://yourdomain.com/api/pesapal/webhook",
-  "active": true
+  "ipn_notification_type": "GET"
 }
 ```
 
-**Response (200 Created):**
+**Response (200 OK):**
 ```json
 {
-  "id": "ca870eb0-3d31-4cba-b7e3-e53c1fb13fbd",
   "url": "https://yourdomain.com/api/pesapal/webhook",
-  "active": true,
-  "created_date": "2025-02-20T10:30:00Z"
+  "created_date": "2025-02-20T10:30:00Z",
+  "ipn_id": "ca870eb0-3d31-4cba-b7e3-e53c1fb13fbd",
+  "error": null,
+  "status": "200"
 }
 ```
 
 **Important Notes:**
-- The `id` returned is your IPN ID (notification_id) — save this; you'll reference it in order requests
+- The `ipn_id` returned is your IPN ID (notification_id) — save this; you'll reference it as `notification_id` in order requests
 - The webhook URL must be publicly accessible and return a 200 OK response
 - Pesapal will retry failed webhook deliveries
 - During development, use an ngrok tunnel: `https://your-ngrok-url.ngrok-free.app/api/pesapal/webhook`
@@ -348,7 +349,7 @@ Retrieve all registered webhook URLs for your merchant account.
 
 **Endpoint:**
 ```
-GET /Notifications
+GET /URLSetup/GetIpnList
 Authorization: Bearer {token}
 ```
 
@@ -577,11 +578,26 @@ const submitOrder = async (order) => {
 
 ### Common Error Scenarios
 
+Pesapal wraps all errors in an `error` object with `type`, `code`, and `message` fields:
+
+```json
+{
+  "error": {
+    "type": "error_type",
+    "code": "error_code",
+    "message": "Detailed error message"
+  }
+}
+```
+
 **1. Invalid Token (401)**
 ```json
 {
-  "error": "Invalid token",
-  "status_code": 401
+  "error": {
+    "type": "unauthorized",
+    "code": "401",
+    "message": "Invalid or expired token"
+  }
 }
 ```
 **Solution:** Request a new token via `POST /Auth/RequestToken`
@@ -589,8 +605,11 @@ const submitOrder = async (order) => {
 **2. Missing Required Fields (400)**
 ```json
 {
-  "error": "notification_id is required",
-  "status_code": 400
+  "error": {
+    "type": "bad_request",
+    "code": "400",
+    "message": "notification_id is required"
+  }
 }
 ```
 **Solution:** Ensure all required fields in request body are present
@@ -598,8 +617,11 @@ const submitOrder = async (order) => {
 **3. Duplicate Order ID (400)**
 ```json
 {
-  "error": "Order with id ORDER-20250220-001 already exists",
-  "status_code": 400
+  "error": {
+    "type": "bad_request",
+    "code": "400",
+    "message": "Order with id ORDER-20250220-001 already exists"
+  }
 }
 ```
 **Solution:** Ensure order IDs are globally unique; use timestamps or UUIDs
@@ -607,8 +629,11 @@ const submitOrder = async (order) => {
 **4. Order Not Found (404)**
 ```json
 {
-  "error": "Transaction not found",
-  "status_code": 404
+  "error": {
+    "type": "not_found",
+    "code": "404",
+    "message": "Transaction not found"
+  }
 }
 ```
 **Solution:** Verify the order_tracking_id is correct
