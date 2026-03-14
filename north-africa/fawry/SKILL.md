@@ -29,30 +29,32 @@ Store in env vars: `FAWRY_MERCHANT_CODE`, `FAWRY_SECURITY_KEY`.
 
 Each API call requires an HMAC SHA-256 signature computed from specific request fields concatenated together in a strict order. **Field order matters — incorrect ordering will result in signature verification failures.**
 
+Fawry uses **plain SHA-256**, not HMAC-SHA256. The `securityKey` is appended to the string being hashed — it is NOT used as an HMAC key.
+
 ```javascript
 const crypto = require('crypto');
 
-function computeSignature(data, securityKey) {
-  return crypto.createHmac('sha256', securityKey)
+function computeSignature(data) {
+  return crypto.createHash('sha256')
     .update(data)
     .digest('hex');
 }
 
 // For payment initiation (charge):
-// signature = HMAC-SHA256(merchantCode + merchantRefNum + customerProfileId + paymentMethod + amount + securityKey)
-// Note: amount must be formatted to 2 decimal places
+// SHA-256(merchantCode + merchantRefNum + customerProfileId + paymentMethod + amount + securityKey)
+// Note: amount must be formatted to 2 decimal places; securityKey appended at end
 const signatureData = `${merchantCode}${merchantRefNum}${customerProfileId}${paymentMethod}${amount.toFixed(2)}${securityKey}`;
-const signature = computeSignature(signatureData, securityKey);
+const signature = computeSignature(signatureData);
 
 // For payment status check:
-// signature = HMAC-SHA256(merchantCode + merchantRefNum + securityKey)
+// SHA-256(merchantCode + merchantRefNum + securityKey)
 const statusSignatureData = `${merchantCode}${merchantRefNum}${securityKey}`;
-const statusSignature = computeSignature(statusSignatureData, securityKey);
+const statusSignature = computeSignature(statusSignatureData);
 
 // For refund:
-// signature = HMAC-SHA256(merchantCode + referenceNumber + refundAmount + reason + securityKey)
+// SHA-256(merchantCode + referenceNumber + refundAmount + reason + securityKey)
 const refundSignatureData = `${merchantCode}${referenceNumber}${refundAmount.toFixed(2)}${reason}${securityKey}`;
-const refundSignature = computeSignature(refundSignatureData, securityKey);
+const refundSignature = computeSignature(refundSignatureData);
 ```
 
 ## Core API Reference
@@ -358,9 +360,9 @@ function verifyWebhookSignature(
   messageSignature,
   securityKey
 ) {
-  // Compute expected signature from webhook data
+  // Fawry uses plain SHA-256; securityKey is appended to the data string (not used as HMAC key)
   const signatureData = `${fawryRefNumber}${merchantRefNumber}${paymentAmount.toFixed(2)}${orderStatus}${securityKey}`;
-  const expectedSignature = crypto.createHmac('sha256', securityKey)
+  const expectedSignature = crypto.createHash('sha256')
     .update(signatureData)
     .digest('hex');
 
@@ -493,7 +495,7 @@ async function handlePaymentError(response) {
 ### Critical Issues That Cause Integration Failures
 
 #### 1. Signature Field Order (MOST COMMON ISSUE)
-Fawry requires fields in a **specific order** for HMAC computation. The order changes by endpoint:
+Fawry requires fields in a **specific order** for SHA-256 computation (plain SHA-256, not HMAC). The order changes by endpoint:
 - **Charge**: `merchantCode + merchantRefNum + customerProfileId + paymentMethod + amount + securityKey`
 - **Status Check**: `merchantCode + merchantRefNum + securityKey`
 - **Refund**: `merchantCode + referenceNumber + refundAmount + reason + securityKey`

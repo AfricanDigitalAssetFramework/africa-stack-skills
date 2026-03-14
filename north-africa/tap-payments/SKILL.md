@@ -553,7 +553,7 @@ async function processPayment(amount, cardSourceId, customerId) {
   const response = await axios.post(
     'https://api.tap.company/v2/charges',
     {
-      amount: amount * 100, // Convert to fils
+      amount: amount * 100, // Convert to smallest unit (piasters for EGP, fils for Gulf currencies)
       currency: 'EGP',
       source: {
         id: cardSourceId
@@ -840,7 +840,7 @@ async function processPaymentWithErrorHandling(amount, cardSourceId) {
 
 ## Important Notes / Gotchas
 
-1. **Amounts in Fils**: All amounts in API requests are in the smallest currency unit (fils for EGP, not Egyptian Pounds). Multiply by 100 when sending: `5000 EGP = 500000 fils`.
+1. **Amounts in Smallest Unit**: All amounts in API requests are in the smallest currency unit. For EGP that is **piasters** (not fils — fils is a Gulf denomination). Multiply by 100: `50 EGP = 5000 piasters`. For KWD/BHD/AED: use fils (1 KWD = 1000 fils).
 
 2. **HTTPS Required**: All API calls must use HTTPS. HTTP connections will be rejected. Card SDK also requires HTTPS for browser security policies.
 

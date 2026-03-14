@@ -264,30 +264,54 @@ Paymob sends webhooks for various transaction events:
 
 Always verify the webhook signature to ensure the request came from Paymob. Use HMAC-SHA512 with your webhook secret key.
 
+Paymob's HMAC is computed over **concatenated specific fields** from `obj` (not `JSON.stringify` of the whole object). The fields are concatenated in alphabetical order according to the Paymob webhook spec. Confirm the exact list on the Paymob dashboard → Settings → Webhook.
+
 **Node.js Example:**
 ```javascript
 const crypto = require('crypto');
 
-// req.body contains the webhook payload
+// Paymob HMAC is SHA-512 over specific concatenated fields from obj
+// Field list (alphabetical): amount_cents, created_at, currency, error_occured,
+// has_parent_transaction, id, integration_id, is_3d_secure, is_auth, is_capture,
+// is_refunded, is_standalone_payment, is_voided, order.id, owner, pending,
+// source_data.pan, source_data.sub_type, source_data.type, success
+function paymobWebhookHmac(obj, secret) {
+  const fields = [
+    obj.amount_cents,
+    obj.created_at,
+    obj.currency,
+    obj.error_occured,
+    obj.has_parent_transaction,
+    obj.id,
+    obj.integration_id,
+    obj.is_3d_secure,
+    obj.is_auth,
+    obj.is_capture,
+    obj.is_refunded,
+    obj.is_standalone_payment,
+    obj.is_voided,
+    obj.order.id,
+    obj.owner,
+    obj.pending,
+    obj.source_data?.pan,
+    obj.source_data?.sub_type,
+    obj.source_data?.type,
+    obj.success
+  ].join('');
+
+  return crypto.createHmac('sha512', secret).update(fields).digest('hex');
+}
+
 const hmacObject = req.body.obj;
-const webhookSecret = process.env.PAYMOB_WEBHOOK_SECRET;
+const expectedHmac = paymobWebhookHmac(hmacObject, process.env.PAYMOB_WEBHOOK_SECRET);
 
-// Create HMAC signature
-const hash = crypto
-  .createHmac('sha512', webhookSecret)
-  .update(JSON.stringify(hmacObject))
-  .digest('hex');
-
-// Compare signatures
-if (hash === req.body.hmac) {
-  // Webhook is valid — process the payment
-  console.log('Valid webhook from Paymob');
+if (expectedHmac === req.body.hmac) {
+  // Valid webhook
   console.log('Transaction ID:', hmacObject.id);
   console.log('Order ID:', hmacObject.order.id);
   console.log('Amount:', hmacObject.amount_cents);
-  console.log('Status:', hmacObject.paid ? 'Success' : 'Failed');
+  console.log('Paid:', hmacObject.paid);
 } else {
-  // Invalid signature — reject the webhook
   console.error('Invalid webhook signature');
   return res.status(401).send('Unauthorized');
 }
@@ -297,29 +321,41 @@ if (hash === req.body.hmac) {
 ```python
 import hmac
 import hashlib
-import json
 
-# Extract webhook data
-hmac_object = request.json['obj']
-webhook_hmac = request.json['hmac']
-webhook_secret = os.getenv('PAYMOB_WEBHOOK_SECRET')
+def paymob_webhook_hmac(obj, secret):
+    # Concatenate specific fields in alphabetical order
+    fields = [
+        str(obj.get('amount_cents', '')),
+        str(obj.get('created_at', '')),
+        str(obj.get('currency', '')),
+        str(obj.get('error_occured', '')),
+        str(obj.get('has_parent_transaction', '')),
+        str(obj.get('id', '')),
+        str(obj.get('integration_id', '')),
+        str(obj.get('is_3d_secure', '')),
+        str(obj.get('is_auth', '')),
+        str(obj.get('is_capture', '')),
+        str(obj.get('is_refunded', '')),
+        str(obj.get('is_standalone_payment', '')),
+        str(obj.get('is_voided', '')),
+        str(obj.get('order', {}).get('id', '')),
+        str(obj.get('owner', '')),
+        str(obj.get('pending', '')),
+        str(obj.get('source_data', {}).get('pan', '')),
+        str(obj.get('source_data', {}).get('sub_type', '')),
+        str(obj.get('source_data', {}).get('type', '')),
+        str(obj.get('success', ''))
+    ]
+    data = ''.join(fields)
+    return hmac.new(secret.encode(), data.encode(), hashlib.sha512).hexdigest()
 
-# Create HMAC signature
-calculated_hash = hmac.new(
-    webhook_secret.encode(),
-    json.dumps(hmac_object).encode(),
-    hashlib.sha512
-).hexdigest()
+hmac_obj = request.json['obj']
+expected = paymob_webhook_hmac(hmac_obj, os.getenv('PAYMOB_WEBHOOK_SECRET'))
 
-# Verify signature
-if calculated_hash == webhook_hmac:
+if expected == request.json['hmac']:
     # Valid webhook
-    transaction_id = hmac_object['id']
-    order_id = hmac_object['order']['id']
-    amount = hmac_object['amount_cents']
-    paid = hmac_object['paid']
+    pass
 else:
-    # Invalid webhook
     return {'error': 'Invalid signature'}, 401
 ```
 
