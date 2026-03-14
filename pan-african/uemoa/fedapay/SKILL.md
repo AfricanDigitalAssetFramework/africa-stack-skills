@@ -111,7 +111,7 @@ Create a new transaction to initiate a payment.
 
 **Key Parameters:**
 - `description` (string): Payment description shown to customer
-- `amount` (integer): Amount in smallest currency unit (cents for XOF)
+- `amount` (integer): Amount in XOF francs (whole units). XOF centimes are not used in practice; treat every unit as one franc. `5000` = 5,000 XOF.
 - `currency.iso` (string): Currency code (XOF, XAF)
 - `callback_url` (string): URL to redirect after payment completion
 - `mode` (string): Payment method (see Payment Methods section)
@@ -372,7 +372,7 @@ app.listen(3000);
 
 $transaction = \FedaPay\Transaction::create([
     'description' => 'Order #1001',
-    'amount' => 5000, // 5000 XOF = 50 CFA
+    'amount' => 5000, // 5000 XOF
     'currency' => ['iso' => 'XOF'],
     'callback_url' => 'https://yoursite.com/order-confirmation',
     'mode' => 'mtn_open',

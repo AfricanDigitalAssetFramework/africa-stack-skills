@@ -15,7 +15,9 @@ You're building a payment solution that needs to accept diverse payment methods 
 
 DPO Group uses Company Token authentication. Your merchant account provides a unique `CompanyToken` (a UUID format identifier) that authenticates all API requests.
 
-**Base URL:** `https://secure.3gdirectpay.com/API/v6/`
+**Base URL (V6):** `https://secure.3gdirectpay.com/API/v6/`
+
+> Note: V7 of the API is available (see Useful Links). Verify with DPO/Network International whether V7 changes any endpoint paths or request formats before upgrading.
 
 **Authentication Method:**
 Include your CompanyToken in the XML request body. Store the token in an environment variable like `DPO_COMPANY_TOKEN` and never hardcode credentials.
@@ -88,7 +90,7 @@ Tokenize a payment transaction to securely initiate payment processing. This is 
 ```
 
 **Key Fields:**
-- `PaymentAmount`: Transaction amount in cents (5000 = 50.00 USD)
+- `PaymentAmount`: Transaction amount in the **major currency unit** (5000 = USD 5000.00, 500 = KES 500). DPO does NOT use minor units (cents/fils). <!-- TODO: verify with https://docs.dpopay.com — confirm whether V6 uses major or minor units for PaymentAmount -->
 - `PaymentCurrency`: ISO 4217 code (USD, GHS, KES, NGN, ZAR, etc.)
 - `CompanyRef`: Your internal transaction reference
 - `RedirectURL`: Customer redirected here after payment

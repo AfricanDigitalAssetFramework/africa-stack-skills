@@ -316,15 +316,16 @@ mono-sec-key: {secret_key}
 
 Mono sends webhooks for account events. Verify with your webhook secret:
 
+Mono sends a static `mono-webhook-secret` header value that you compare directly against your configured webhook secret — it is **not** a computed HMAC. Verify as follows:
+
 ```javascript
-const crypto = require('crypto');
-const hash = crypto.createHmac('sha512', webhookSecret)
-  .update(JSON.stringify(req.body))
-  .digest('hex');
-if (hash !== req.headers['mono-webhook-secret']) {
+const incomingSecret = req.headers['mono-webhook-secret'];
+if (incomingSecret !== process.env.MONO_WEBHOOK_SECRET) {
   return res.status(401).end();
 }
 ```
+
+<!-- TODO: confirm with https://docs.mono.co/docs/financial-data/webhook-introduction — if Mono has added HMAC signing for webhooks in a newer version, update accordingly -->
 
 ### Key Webhook Events
 
