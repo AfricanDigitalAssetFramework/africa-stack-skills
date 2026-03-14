@@ -113,7 +113,7 @@ const headers = {
 
 Initiate a request to collect funds from a customer's mobile money wallet to your PawaPay account.
 
-**Endpoint:** `POST /deposits`
+**Endpoint:** `POST /v2/deposits`
 
 **Request:**
 ```json
@@ -148,14 +148,14 @@ Initiate a request to collect funds from a customer's mobile money wallet to you
 
 **Check Deposit Status:**
 ```bash
-GET /deposits/{depositId}
+GET /v2/deposits/{depositId}
 ```
 
 ### 2. Payouts (Disbursements)
 
 Send funds from your PawaPay account to a customer's mobile money wallet.
 
-**Endpoint:** `POST /payouts`
+**Endpoint:** `POST /v2/payouts`
 
 **Request:**
 ```json
@@ -190,7 +190,7 @@ Send funds from your PawaPay account to a customer's mobile money wallet.
 
 **Check Payout Status:**
 ```bash
-GET /payouts/{payoutId}
+GET /v2/payouts/{payoutId}
 ```
 
 ### 3. Bulk Payouts
@@ -244,7 +244,7 @@ GET /bulk-payouts/{bulkPayoutId}
 
 Reverse a completed transaction by refunding to the original source.
 
-**Endpoint:** `POST /refunds`
+**Endpoint:** `POST /v2/refunds`
 
 **Request:**
 ```json
@@ -267,7 +267,7 @@ Reverse a completed transaction by refunding to the original source.
 
 **Check Refund Status:**
 ```bash
-GET /refunds/{refundId}
+GET /v2/refunds/{refundId}
 ```
 
 ## Webhook Integration

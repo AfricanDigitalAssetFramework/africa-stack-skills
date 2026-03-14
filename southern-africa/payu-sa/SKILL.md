@@ -41,6 +41,8 @@ For Redirect Payment Page (RPP) integration:
 hash = SHA512(merchant_key + security_key + amount + currency + order_id + customer_email)
 ```
 
+> ⚠️ **Verify the hash field order with PayU directly before going live.** The field concatenation order above is based on available documentation, but PayU SA's exact hash specification varies by integration type (RPP vs Enterprise API) and has not been independently confirmed from live docs. An incorrect field order will cause every transaction to fail with an authentication error. Test your hash generation thoroughly in sandbox and confirm with PayU support if transaction failures occur.
+
 For server-to-server API calls, include:
 - Merchant Key in request headers or as first parameter
 - SHA512 hashes for request verification

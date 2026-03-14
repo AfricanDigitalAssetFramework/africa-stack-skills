@@ -81,6 +81,18 @@ Include the access token in all subsequent API requests:
 Authorization: Bearer {access_token}
 ```
 
+### Required Headers (All Requests)
+
+> ⚠️ **These headers are required on every API call** — missing them will result in rejected requests.
+
+| Header | Description | Example |
+|--------|-------------|---------|
+| `Authorization` | Bearer token from OAuth flow | `Bearer eyJhbGci...` |
+| `X-Country` | ISO 3166-1 alpha-2 country code | `KE`, `NG`, `ZM` |
+| `X-Currency` | ISO 4217 currency code for that country | `KES`, `NGN`, `ZMW` |
+| `Content-Type` | Always JSON | `application/json` |
+| `Accept` | Always JSON | `application/json` |
+
 **JavaScript Example** (Node.js with fetch):
 ```javascript
 async function getAccessToken(clientId, clientSecret) {
@@ -116,7 +128,7 @@ const headers = {
 
 Initiate a payment request from a customer. The customer will be prompted to enter their Airtel Money PIN to authorize the transaction.
 
-**Endpoint**: `POST /merchant/v2/payments/`
+**Endpoint**: `POST /merchant/v2/payments/{country_code}`
 
 **Request Body**:
 ```json
@@ -385,7 +397,7 @@ function verifySignature(payload, signature) {
 async function collectPayment(msisdn, amount, reference) {
   const token = await getAccessToken();
 
-  const response = await fetch('https://openapi.airtel.africa/merchant/v2/payments/', {
+  const response = await fetch('https://openapi.airtel.africa/merchant/v2/payments/${countryCode}', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -625,7 +637,7 @@ async function makeRequestWithRetry(fn, maxRetries = 3) {
 // Usage
 const response = await makeRequestWithRetry(async () => {
   const token = await getAccessToken();
-  return fetch('https://openapi.airtel.africa/merchant/v2/payments/', {
+  return fetch('https://openapi.airtel.africa/merchant/v2/payments/${countryCode}', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${token}` },
     body: JSON.stringify(payload)

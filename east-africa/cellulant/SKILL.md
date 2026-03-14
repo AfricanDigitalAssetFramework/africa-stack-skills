@@ -108,8 +108,7 @@ Content-Type: application/json
 | service_code | string | Yes | Service identifier (use "GenericService" for basic payments) |
 | currency_code | string | Yes | 3-letter ISO currency code (KES, NGN, GHS, UGX, TZS, RWF, ZMW, BWP) |
 | country_code | string | Yes | 2-letter ISO country code (KE, NG, GH, UG, TZ, RW, ZM, BW) |
-| request_amount | integer | Yes | Amount in smallest currency unit (cents/pesewa). Whole numbers only. <!-- TODO: verify — M-Pesa in KES does not use sub-unit "cents"; confirm with Tingg docs whether KES amounts are in whole shillings or in cents --> |
-| customer_email | string | Yes | Payer's email address |
+| request_amount | integer | Yes | Amount in smallest currency unit (cents/pesewa). Whole numbers only. ⚠️ **KES clarification needed**: KES has no standard cent sub-unit in common use. Confirm with Tingg support whether `1500` means KSh 1,500 (major) or KSh 15.00 (minor/cents) — using the wrong interpretation will charge incorrect amounts. Other currencies (NGN, GHS) follow standard minor unit conventions (kobo, pesewa). || customer_email | string | Yes | Payer's email address |
 | customer_first_name | string | Yes | Payer's first name |
 | customer_last_name | string | Yes | Payer's last name |
 | msisdn | string | Yes | Payer's phone number with country code (e.g., +254712345678) |

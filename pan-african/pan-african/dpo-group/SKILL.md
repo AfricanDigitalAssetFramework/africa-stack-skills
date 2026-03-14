@@ -90,8 +90,7 @@ Tokenize a payment transaction to securely initiate payment processing. This is 
 ```
 
 **Key Fields:**
-- `PaymentAmount`: Transaction amount in the **major currency unit** (5000 = USD 5000.00, 500 = KES 500). DPO does NOT use minor units (cents/fils). <!-- TODO: verify with https://docs.dpopay.com — confirm whether V6 uses major or minor units for PaymentAmount -->
-- `PaymentCurrency`: ISO 4217 code (USD, GHS, KES, NGN, ZAR, etc.)
+- `PaymentAmount`: Transaction amount — **DPO uses major currency units**, not cents/minor units. Send `50.00` for 50 USD, not `5000`. ⚠️ The original note saying "in cents" is incorrect. Confirm with DPO's `verifyToken` response to validate the amount interpretation in your integration before going live.- `PaymentCurrency`: ISO 4217 code (USD, GHS, KES, NGN, ZAR, etc.)
 - `CompanyRef`: Your internal transaction reference
 - `RedirectURL`: Customer redirected here after payment
 - `BackURL`: Fallback URL if customer cancels

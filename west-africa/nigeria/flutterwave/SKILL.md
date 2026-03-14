@@ -23,6 +23,8 @@ Keys: `FLWSECK_TEST-` for sandbox, `FLWSECK-` for production. Store in `FLUTTERW
 
 **Base URL:** `https://api.flutterwave.com/v3`
 
+> ⚠️ **v3 vs v4:** This skill documents the **v3 API**, which is fully functional and widely used. Flutterwave launched **v4** in 2024 with OAuth 2.0 authentication (`https://idp.flutterwave.com/realms/flutterwave/protocol/openid-connect/token`) and updated sandbox URLs (`https://developersandbox-api.flutterwave.com`). If you are starting a new integration and your dashboard offers v4 credentials, prefer v4. The v3 `FLWSECK_` secret key auth described here will continue to work for existing integrations.
+
 ## Core API Reference
 
 ### Standard Payment (Redirect)

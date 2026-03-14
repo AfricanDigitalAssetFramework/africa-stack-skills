@@ -47,6 +47,8 @@ grant_type=client_credentials
 
 Store credentials in env vars: `STITCH_CLIENT_ID`, `STITCH_CLIENT_SECRET`.
 
+> ⚠️ **JWT Client Assertion (Recommended for Production):** The `client_secret` flow above works for some account types, but Stitch recommends **JWT client assertion** for production integrations. This uses an RS256-signed JWT with your X.509 certificate and private key instead of a `client_secret`. To use it, replace `client_secret=...` with `client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer&client_assertion={signed_jwt}`. Generate the JWT using your private key (RS256) with claims: `iss`, `sub` (both = `client_id`), `aud` (`https://secure.stitch.money/connect/token`), `jti`, `iat`, `exp`. See [Stitch auth docs](https://docs.stitch.money/authentication/client-tokens) for certificate setup. If your integration fails with `client_secret`, this is the likely required path.
+
 **API URL:** `https://api.stitch.money/graphql` (GraphQL endpoint)
 
 All requests are GraphQL queries/mutations sent as POST to this single endpoint.

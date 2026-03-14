@@ -53,10 +53,13 @@ export IK_ENTITYID=your_entity_id
 - For multi-location merchants, you may manage locations separately within a single account or use location identifiers in API calls
 - Never commit credentials to version control; use environment variables or secure secret management
 
-**Base URL (development):** `https://dev.ikhokha.com/api`
+**Base URLs:**
+| Environment | URL |
+|-------------|-----|
+| **Development/Testing** | `https://dev.ikhokha.com/api` |
+| **Production** | `https://api.ikhokha.com/api` *(inferred — confirm via [developer.ikhokha.com](https://developer.ikhokha.com))* |
 
-<!-- TODO: confirm production base URL — developer.ikhokha.com or another host; the dev URL above is for testing only -->
-
+> ⚠️ **Production URL not independently verified.** The developer portal at `developer.ikhokha.com` did not expose the production base URL in accessible documentation. The production URL `https://api.ikhokha.com/api` follows the expected pattern but must be confirmed before deploying. Check your iKhokha dashboard under **Payments → iK Pay API** for the confirmed production endpoint, or contact iKhokha support.
 ## Core API Reference
 
 ### Important Note on iKhokha's Architecture

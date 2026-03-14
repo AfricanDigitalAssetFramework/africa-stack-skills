@@ -36,6 +36,15 @@ API credentials are generated through the Thunes Portal after completing the ini
 
 **Important**: API credentials must be generated via the Thunes Portal's Developer Module. Self-service API access is available after account activation, but initial account setup requires a partnership agreement review.
 
+### Base URLs
+
+| Environment | URL |
+|-------------|-----|
+| **Sandbox** | `https://api-sandbox.thunes.com` |
+| **Production** | `https://api.thunes.com` |
+
+Replace `{API_ENDPOINT}` in all examples below with the appropriate URL for your environment.
+
 ### Basic Auth Header
 
 All API requests must include an Authorization header with base64-encoded credentials:

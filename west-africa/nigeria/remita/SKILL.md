@@ -24,8 +24,7 @@ API-Key: {your_api_key}
 Obtain credentials from your Remita merchant dashboard. Store them in environment variables like `REMITA_API_KEY` and `REMITA_ACCESS_TOKEN`. Never hardcode credentials.
 
 **Base URL:** `https://api.remita.net/api/v1`
-**Sandbox URL:** `https://demo.remita.net/api/v1` <!-- TODO: verify — the legacy Remita sandbox is at remitademo.net; confirm current REST API sandbox URL with Remita developer portal -->
-
+**Sandbox URL:** `https://demo.remita.net/api/v1` *(⚠️ Verify this before testing — Remita's sandbox URL has changed across API versions. The legacy sandbox was `remitademo.net`. If `demo.remita.net` returns errors, check the [Remita developer portal](https://developer.remita.net) for the current sandbox endpoint.)*
 **Token Generation:**
 
 ```

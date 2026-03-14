@@ -47,7 +47,7 @@ Authorization: Bearer your_secret_key
 
 ```bash
 curl -X POST https://sandbox-api-d.squadco.com/transaction/initiate \
-  -H "Authorization: Bearer sandbox_sk_94f2b798466408ef4d19e848ee1a4d1a3e93f104046f" \
+  -H "Authorization: Bearer sandbox_sk_YOUR_SANDBOX_KEY_HERE" \
   -H "Content-Type: application/json" \
   -d '{"amount": 50000, "email": "customer@example.com"}'
 ```
