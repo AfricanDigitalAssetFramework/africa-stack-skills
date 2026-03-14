@@ -335,6 +335,10 @@ function createCharge(orderData) {
     notify_url: 'https://yourdomain.com/payment/ipn'
   };
 
+  // TODO: verify exact hash field order with PayU documentation —
+  // DO NOT use JSON.stringify(payload) as field order is not guaranteed;
+  // PayU hashes use specific fields concatenated in a defined order.
+  // Consult https://corporate.payu.com/developer-documentation-africa/ for the exact formula.
   const hash = crypto
     .createHash('sha512')
     .update(JSON.stringify(payload) + process.env.PAYU_MERCHANT_SALT)
@@ -500,7 +504,7 @@ setTimeout(async () => {
 - [PayU Africa Developer Documentation](https://corporate.payu.com/developer-documentation-africa/)
 - [PayU South Africa Payment Gateway](https://southafrica.payu.com/payment-gateway/)
 - [PayU South Africa Subscription Payments](https://southafrica.payu.com/subscription-payments/)
-- [PayU Instant EFT Solution](https://southafrica.payu.com/ozow/)
+- [PayU Instant EFT Page](https://southafrica.payu.com/ozow/) <!-- Note: Ozow is a separate company; PayU partners with EFT providers including Ozow but they are not the same product -->
 - [PayU South Africa FAQs](https://southafrica.payu.com/faqs/)
 - [PayU Global Corporate Site](https://corporate.payu.com/)
 - [PayU MEA Knowledge Base](https://help.payu.co.za/)

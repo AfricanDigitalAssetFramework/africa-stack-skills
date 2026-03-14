@@ -106,7 +106,7 @@ x-fapi-interaction-id: {UUID}
     "Account": [
       {
         "AccountId": "50089234",
-        "Currency": "GBP",
+        "Currency": "ZAR",
         "Name": "Mr Kevin",
         "Subtype": "CurrentAccount",
         "Type": "Personal",
@@ -147,9 +147,9 @@ x-fapi-interaction-id: {UUID}
       {
         "Amount": {
           "Amount": "1230.00",
-          "Currency": "GBP"
+          "Currency": "ZAR"
         },
-        "CreditDebitIndicator": "Debit",
+        "CreditDebitIndicator": "Credit",
         "Type": "Closing Available"
       }
     ]
