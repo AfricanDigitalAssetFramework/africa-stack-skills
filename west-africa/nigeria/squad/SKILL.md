@@ -1410,6 +1410,91 @@ Large payouts may be queued or require manual approval.
 
 ---
 
+## Virtual Account Webhook Notifications
+
+When a customer sends funds into a Squad virtual account, Squad fires a webhook to your configured URL. This is the primary way to know a virtual account has been funded — do not poll.
+
+```json
+{
+  "Event": "charge_successful",
+  "TransactionRef": "SQVA_xxxxxxxxxxxx",
+  "Body": {
+    "transaction_ref": "SQVA_xxxxxxxxxxxx",
+    "virtual_account_number": "2XXXXXXXXXX",
+    "principal_amount": "5000",
+    "settled_amount": "4975",
+    "fee_charged": "25",
+    "transaction_date": "2024-02-15T10:35:22.000Z",
+    "customer_identifier": "your_unique_customer_ref",
+    "transaction_indicator": "C",
+    "remarks": "Transfer from Emeka Okafor",
+    "currency": "NGN",
+    "channel": "virtual_account",
+    "bank_name": "Guaranty Trust Bank"
+  }
+}
+```
+
+Verify the webhook signature as documented in the main webhook section before processing. The `customer_identifier` maps to the reference you passed when creating the virtual account — use this to match the payment to your customer record.
+
+## Dispute Management
+
+Squad provides endpoints to manage chargebacks and payment disputes raised by customers through their banks.
+
+### List Disputes
+```
+GET /api/v1/dispute
+Authorization: Bearer {secret_key}
+```
+Returns all disputes on your merchant account with status: `pending`, `awaiting_response`, `resolved`, `won`, `lost`.
+
+### Get Dispute Details
+```
+GET /api/v1/dispute/{ticket_id}
+Authorization: Bearer {secret_key}
+```
+
+### Upload Dispute Evidence
+```
+POST /api/v1/dispute/{ticket_id}/upload-evidence
+Authorization: Bearer {secret_key}
+Content-Type: multipart/form-data
+
+file: (attach PDF, PNG, or JPEG evidence — e.g. delivery confirmation, order screenshot)
+```
+Squad requires evidence submission within the deadline shown on the dispute (typically 5–7 days). Missing the deadline results in an automatic loss.
+
+### Accept / Reject a Dispute
+```
+POST /api/v1/dispute/{ticket_id}/accept
+Authorization: Bearer {secret_key}
+```
+Accept if you agree to refund the customer. Reject by submitting evidence instead.
+
+## QR Code Collection
+
+Squad QR allows merchants to generate a static QR code that customers scan with their banking app to make a direct bank transfer — no card required.
+
+### Generate a Dynamic QR Code (Per Transaction)
+```
+POST /api/v1/payment/initiate
+Authorization: Bearer {secret_key}
+Content-Type: application/json
+
+{
+  "email": "customer@example.com",
+  "amount": 50000,
+  "currency": "NGN",
+  "initiate_type": "qrcode",
+  "transaction_ref": "unique_ref_" + Date.now(),
+  "callback_url": "https://yourapp.com/payment/complete"
+}
+```
+Response includes `checkout_url` and a `qr_code` base64 image. Display the QR code to the customer — they scan with their bank app and the transfer is completed. Squad fires the `charge_successful` webhook when payment lands.
+
+### Static QR (Dashboard-Generated)
+Available from the Squad Dashboard under Collections > QR Code. Generates a permanent QR code linked to your merchant account — any amount paid is reflected in your Squad balance. Useful for in-person or print-based payments.
+
 ## Useful Links
 
 | Resource | URL |

@@ -81,6 +81,26 @@ POST /api/sms/send
 
 Use `message_id` for tracking. `balance` shows remaining credits.
 
+### Send Bulk SMS
+
+Send the same message to multiple recipients in a single API call.
+
+```
+POST /api/sms/send/bulk
+Content-Type: application/json
+
+{
+  "to": ["+2348012345678", "+2348098765432", "+2349011223344"],
+  "from": "YourBrand",
+  "sms": "Hello! Your order has been confirmed. Thank you for shopping with us.",
+  "type": "plain",
+  "api_key": "your_api_key",
+  "channel": "generic"
+}
+```
+
+The response returns individual delivery statuses per number. Rate limits apply — avoid sending more than 10,000 in a single batch; split into smaller chunks with delays for very large campaigns.
+
 ### Send Number Message (Alternative SMS Route)
 
 Send SMS via direct number routing for direct carrier access.

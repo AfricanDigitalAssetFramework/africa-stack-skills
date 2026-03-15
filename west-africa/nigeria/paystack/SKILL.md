@@ -219,6 +219,53 @@ POST /subscription
 }
 ```
 
+### Direct Card Charge (PCI-DSS Servers Only)
+> ⚠️ Only use this if your server is PCI-DSS compliant. For most integrations, use Initialize Transaction + hosted page instead.
+
+```
+POST /charge
+Authorization: Bearer {secret_key}
+Content-Type: application/json
+
+{
+  "email": "customer@example.com",
+  "amount": 50000,
+  "card": {
+    "number": "4084084084084081",
+    "cvv": "408",
+    "expiry_month": "01",
+    "expiry_year": "99"
+  }
+}
+```
+Response may require OTP or 3DS — handle `data.status` values: `send_otp`, `send_pin`, `failed`, `success`.
+
+### Bulk Charges (Payroll / Mass Payouts)
+```
+POST /bulkcharge
+Authorization: Bearer {secret_key}
+Content-Type: application/json
+
+[
+  { "authorization": "AUTH_xxxxxxxxxx", "amount": 10000, "reference": "ref_001" },
+  { "authorization": "AUTH_yyyyyyyyyy", "amount": 20000, "reference": "ref_002" }
+]
+```
+Returns a batch `id`. Poll `GET /bulkcharge/{id}/charges` for individual charge statuses.
+
+### Create a Refund
+```
+POST /refund
+Authorization: Bearer {secret_key}
+Content-Type: application/json
+
+{
+  "transaction": "ref_or_id_of_original_transaction",
+  "amount": 5000
+}
+```
+`amount` is optional — omit to refund the full transaction amount. Partial refunds supported.
+
 ### List Banks
 
 ```

@@ -270,9 +270,16 @@ Returns a list of all MMO providers (MTN, Airtel, Vodafone, Safaricom, etc.) wit
 Validate a bank account before disbursing to confirm the account name.
 
 ```
-GET /api/v1/transactions/verify-account?bank_code=058&account_number=0123456789
+POST /api/v1/misc/banks/resolve
+Authorization: Bearer {secret_key}
+Content-Type: application/json
+
+{
+  "bank": "058",
+  "account_number": "0123456789"
+}
 ```
-<!-- TODO: verify exact path — some Korapay integrations use /api/v1/misc/banks/resolve; confirm with https://docs.korapay.com -->
+> Note: The correct path is `POST /api/v1/misc/banks/resolve` (not GET, not `/transactions/verify-account`). Korapay uses a POST body rather than query params for this endpoint.
 
 **Query Parameters:**
 - `bank_code`: 3-digit bank code
@@ -392,6 +399,51 @@ Common errors:
 - **500**: Server error — retry with exponential backoff
 
 For disbursements, failed status might indicate invalid account, insufficient balance, or network issues.
+
+## Korapay Checkout SDK (Web Integration)
+
+For web applications, the Korapay Checkout SDK is the most common integration path — it opens a hosted payment modal directly on your page without redirecting the customer away.
+
+```html
+<script src="https://korabay.s3.amazonaws.com/checkout.min.js"></script>
+
+<script>
+function pay() {
+  const checkout = new KorapayCheckout({
+    key: "pk_live_your_public_key",          // use public key, not secret key
+    reference: "unique_ref_" + Date.now(),
+    amount: 50000,                            // in kobo for NGN
+    currency: "NGN",
+    customer: {
+      email: "customer@example.com",
+      name: "Adeola Okonkwo"
+    },
+    onClose: function() {
+      console.log("Payment modal closed");
+    },
+    onSuccess: function(data) {
+      // data.reference — use this to verify on your backend
+      console.log("Payment success:", data);
+      verifyPayment(data.reference);
+    },
+    onFailed: function(data) {
+      console.error("Payment failed:", data);
+    }
+  });
+
+  checkout.show();
+}
+</script>
+
+<button onclick="pay()">Pay Now</button>
+```
+
+After `onSuccess`, always verify the payment server-side:
+```
+GET /api/v1/charges/{reference}
+Authorization: Bearer {secret_key}
+```
+The checkout URL returned from the Checkout API (`data.checkout_url`) redirects to the same hosted interface. The SDK is preferred over a direct redirect because it keeps the customer on your page.
 
 ## Important Notes and Gotchas
 

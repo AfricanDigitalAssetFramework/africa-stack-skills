@@ -312,9 +312,88 @@ Dojah returns structured error responses:
 - **Sandbox Testing**: Use sandbox environment and test BVN `22222222222` for development.
 - **Multi-Country**: Dojah supports Kenya (KRA PIN) and other African markets beyond Nigeria.
 
+## Header Casing — AppId vs app_id
+
+> ⚠️ Dojah documentation inconsistently uses both `AppId` and `app_id` as the header name in different sections. The correct header name is **`AppId`** (PascalCase). If you receive 401 errors despite a correct API key, verify you are sending `AppId` and not `app_id` or `app-id`.
+
+```
+Authorization: Bearer your_api_key
+AppId: your_app_id      ← correct casing
+```
+
+## Dojah Connect (Widget / Embed — Primary Integration Path)
+
+For most production use cases, Dojah Connect is now the recommended integration path rather than calling individual endpoints directly. It is a configurable drop-in widget that handles the full KYC flow — identity verification, liveness check, document scan — in a single embeddable component.
+
+```html
+<!-- Include the Dojah Connect widget script -->
+<script src="https://widget.dojah.io/widget.js"></script>
+
+<script>
+const connect = new Connect({
+  app_id: "your_app_id",           // note: app_id (snake_case) in the widget config
+  p_key: "your_public_key",
+  type: "custom",
+  config: {
+    widget_id: "your_widget_id"    // configured in Dojah dashboard
+  },
+  onSuccess: function(data) {
+    console.log("KYC complete:", data);
+  },
+  onError: function(err) {
+    console.error("KYC error:", err);
+  },
+  onClose: function() {
+    console.log("Widget closed");
+  }
+});
+connect.setup();
+connect.open();
+</script>
+```
+
+The widget ID maps to a verification flow you design in the Dojah dashboard — selecting which checks to run (BVN, selfie, NIN, document, etc.). Useful for onboarding flows where you want a managed UI rather than raw API calls.
+
+## Fraud and Decisions APIs
+
+Dojah has expanded significantly beyond KYC. The Fraud and Decisions products allow you to build risk-scoring and automated decision workflows.
+
+### Fraud Detection
+```
+POST /api/v1/fraud/bvn
+Authorization: Bearer your_api_key
+AppId: your_app_id
+Content-Type: application/json
+
+{
+  "bvn": "22222222222"
+}
+```
+Returns fraud signals associated with a BVN — including whether it appears in known fraud databases, how many accounts are linked, and velocity signals.
+
+### Decisions (Rules Engine)
+Dojah Decisions is a no-code rules engine built on top of their verification data. You configure decision flows in the dashboard (e.g. "if BVN verified AND liveness score > 0.95 AND not on fraud list → APPROVE") and trigger them via API:
+
+```
+POST /api/v1/decisions
+Authorization: Bearer your_api_key
+AppId: your_app_id
+Content-Type: application/json
+
+{
+  "flow_id": "your_flow_id",
+  "data": {
+    "bvn": "22222222222",
+    "selfie": "base64_encoded_image"
+  }
+}
+```
+Returns a structured decision: `APPROVED`, `DENIED`, or `REVIEW`, with the rules that triggered each outcome.
+
 ## Resources
 
 - **API Documentation**: https://api-docs.dojah.io and https://docs.dojah.io
+- **Widget Documentation**: https://docs.dojah.io/docs/dojah-connect
 - **Sandbox Base URL**: Available in dashboard
 - **Test Data**: Sandbox credentials provided in dashboard
 - **Support**: Dojah support team for technical issues

@@ -5,6 +5,10 @@ description: "Integrate with the Kuda Bank API for Nigerian digital banking. Use
 
 # Kuda Bank Integration Skill
 
+> ⚠️ **Partner/Enterprise Access Only.** Kuda's Open API is not publicly self-service. You must contact Kuda directly (via business.kuda.com or their partnerships team) and be approved before you receive API credentials. There is no self-signup developer portal. Budget 1–4 weeks for the approval process. If you need instant access, use Paystack or Flutterwave for payment collection while you await Kuda API access.
+
+> ⚠️ **PascalCase Endpoints.** Kuda uses PascalCase path segments (e.g. `/Account/CreateVirtualAccount`) which is unusual. Ensure your HTTP client is not lowercasing paths.
+
 Kuda is Nigeria's first mobile-only bank (licensed by CBN) offering open banking APIs for account creation, transfers, bill payments, and fund management. Embed banking features directly into your application with virtual accounts, instant settlement, and comprehensive transaction management.
 
 ## When to use this skill

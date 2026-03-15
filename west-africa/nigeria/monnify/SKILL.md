@@ -443,6 +443,79 @@ Common response codes:
 
 Check `requestSuccessful` flag first, then examine `responseCode` for error details.
 
+## Reserved Accounts (Virtual Accounts for Business Banking)
+
+Reserved accounts are dedicated bank account numbers assigned to a specific customer — any payment into that account is automatically matched to the customer. Widely used in Nigeria for business banking integrations (e.g. every user gets their own bank account number for deposits).
+
+### Create a Reserved Account
+```
+POST /api/v1/bank-transfer/reserved-accounts
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "accountReference": "unique_ref_per_customer",
+  "accountName": "Adaobi Okafor",
+  "currencyCode": "NGN",
+  "contractCode": "YOUR_CONTRACT_CODE",
+  "customerEmail": "adaobi@example.com",
+  "customerName": "Adaobi Okafor",
+  "bvn": "22222222222",
+  "getAllAvailableBanks": false,
+  "preferredBanks": ["035"]
+}
+```
+`contractCode` is obtained from your Monnify dashboard. `preferredBanks` accepts bank codes — e.g. Wema Bank (035) is commonly used for virtual accounts.
+
+### Get Reserved Account Details
+```
+GET /api/v1/bank-transfer/reserved-accounts/{accountReference}
+Authorization: Bearer {access_token}
+```
+Returns the assigned account number(s) and bank(s). Use this to show the customer their dedicated account number.
+
+### List Transactions on a Reserved Account
+```
+GET /api/v1/bank-transfer/reserved-accounts/transactions?accountReference={ref}&page=0&size=20
+Authorization: Bearer {access_token}
+```
+
+Monnify sends a webhook event (`SUCCESSFUL_TRANSACTION`) when funds are received into a reserved account. Always use webhook + server-side verification rather than polling.
+
+---
+
+## Split Payment (Marketplace / Sub-Merchant)
+
+Split payments allow you to automatically distribute incoming payments between multiple accounts — useful for marketplaces where a platform fee is deducted before the seller receives their share.
+
+### Create a Payment with Splits
+```
+POST /api/v1/merchant/transactions/init-transaction
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "amount": 100000,
+  "customerName": "Buyer Name",
+  "customerEmail": "buyer@example.com",
+  "paymentReference": "unique_ref_" + timestamp,
+  "paymentDescription": "Order payment",
+  "currencyCode": "NGN",
+  "contractCode": "YOUR_CONTRACT_CODE",
+  "redirectUrl": "https://yourapp.com/payment-complete",
+  "paymentMethods": ["CARD", "ACCOUNT_TRANSFER"],
+  "incomeSplitConfig": [
+    {
+      "subAccountCode": "MFY_SUB_xxxxx",   // sub-account code from dashboard
+      "feePercentage": 10,                  // seller gets 10%
+      "splitPercentage": 90,               // or use splitAmount instead
+      "feeBearer": false
+    }
+  ]
+}
+```
+Sub-account codes are generated in the Monnify dashboard for each merchant/seller. The platform retains the remainder after splits.
+
 ## Best Practices
 
 - **Kobo Units:** All amounts in kobo. ₦500 = 50000 kobo. Critical for correct payment processing.

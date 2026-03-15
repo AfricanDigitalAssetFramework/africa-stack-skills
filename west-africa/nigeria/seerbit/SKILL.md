@@ -764,6 +764,65 @@ async function processRecurringBillings() {
 }
 ```
 
+## Webhook Signature Verification
+
+SeerBit signs webhook payloads so you can verify they are genuinely from SeerBit and not spoofed. The signature is sent in the `X-Seerbit-Signature` header.
+
+```javascript
+const crypto = require('crypto');
+
+function verifySeerbitWebhook(payload, signature, secretKey) {
+  // SeerBit signs: HMAC-SHA512 of the raw request body using your secret key
+  const expectedSignature = crypto
+    .createHmac('sha512', secretKey)
+    .update(JSON.stringify(payload))   // use raw body string if possible
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature, 'hex'),
+    Buffer.from(expectedSignature, 'hex')
+  );
+}
+
+app.post('/webhook/seerbit', express.json(), (req, res) => {
+  const signature = req.headers['x-seerbit-signature'];
+  const secretKey = process.env.SEERBIT_SECRET_KEY;
+
+  if (!verifySeerbitWebhook(req.body, signature, secretKey)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  // Process verified webhook
+  res.status(200).json({ success: true });
+});
+```
+
+> ⚠️ If SeerBit does not send an `X-Seerbit-Signature` header in your integration, use your transaction reference to look up and verify the transaction status via `GET /api/v2/transactions/{reference}` instead of trusting the webhook payload directly.
+
+## Payment Links (Checkout Page)
+
+SeerBit payment links allow you to collect payments without any frontend code — share a hosted checkout URL with your customer.
+
+### Create a Payment Link
+```
+POST /api/v2/payments/standard/payment-link
+Authorization: Bearer {bearer_token}
+Content-Type: application/json
+
+{
+  "amount": "50000",
+  "currency": "NGN",
+  "description": "Payment for Order #12345",
+  "email": "customer@example.com",
+  "fullName": "Adaeze Obi",
+  "phoneNumber": "+2348012345678",
+  "reference": "unique_ref_" + Date.now(),
+  "callbackUrl": "https://yourapp.com/payment-complete",
+  "publicKey": "SBTESTPUBK_your_public_key"
+}
+```
+Response includes `checkoutUrl` — redirect the customer to this URL to complete payment. No card data ever touches your server.
+
 ## Error Handling
 
 ### Common Error Codes
