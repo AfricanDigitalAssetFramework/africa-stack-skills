@@ -9,19 +9,46 @@
 
 ---
 
+## ✅ Post-Audit Fix Status — Updated 2026-03-15
+
+Seven rounds of fixes have been applied after the initial audit. The statuses below in the detail section reflect the **original audit findings** (preserved for reference). Here is the current fix summary:
+
+### Resolved (7 Rounds of Fixes)
+
+| Round | Commit | Skills Fixed |
+|-------|--------|-------------|
+| 1 | `7cf2d90` | Cellulant, Thunes, Airtel Money, DPO Group, PawaPay, iKhokha, PayU SA, Stitch, Flutterwave, Remita, Squad |
+| 2 | `8c05188` | Paystack, Dojah, Korapay, Kuda, Monnify, Termii, SeerBit, Squad (expanded) |
+| 3 | `3339b03` | Hubtel, PaySwitch |
+| 4 | `237aad9` | Equity Bank Jenga, iPay Kenya, NCBA Loop |
+| 5 | `5f1dc00` | PayFast, Peach Payments, Yoco, KKiaPay, Wave |
+| 6 | `2fd8e8e` | Interswitch |
+| 7 | `9600493` | Chipper Cash, MFS Africa/Onafriq, JamboPay, Nedbank API, CowPay, OnePipe |
+
+**All original critical findings (Squad security key, PawaPay /v2/ prefix, iKhokha production URL, etc.) have been resolved.** Round 7 addressed the remaining NEEDS UPDATE and DOCS NOT FOUND skills with targeted warnings and accuracy notes where official documentation was unavailable.
+
+### Still Unresolvable (Limited by Unavailable Public Docs)
+
+The following providers have no public API documentation portal. Skills include prominent ⚠️ warnings and should be treated as best-effort references:
+- **JamboPay** — docs behind merchant login; paths are indicative only
+- **Chipper Cash** — enterprise-only API, no public docs; endpoints unverified; market uncertainty noted
+- **MFS Africa / Onafriq** — commercial partnership required; two API surfaces (Beyonic vs Onafriq Hub) documented separately
+
+---
+
 ## Summary of Critical Findings
 
-Before the detail, here's what needs fixing before release:
+> **Note:** All critical findings below have been resolved in post-audit fix rounds. Preserved here for reference.
 
-1. 🔑 **Squad** — Real-looking sandbox API key hardcoded in a curl example. Must remove.
-2. ❌ **PawaPay** — All endpoints missing the `/v2/` version prefix. Code will 404 as written.
-3. ❌ **iKhokha** — Author left a TODO: production base URL is unknown. Skill cannot be used in production.
-4. ⚠️ **Flutterwave** — Covers only v3 API; Flutterwave has launched v4 with OAuth 2.0 authentication. v3 still functions but is no longer the documented standard.
-5. ⚠️ **Stitch** — TODO comment warns that auth method may be wrong (JWT certificate vs client_secret). Critical for an auth section.
-6. ⚠️ **Remita** — TODO on sandbox URL; author wasn't sure if it's correct.
-7. ⚠️ **PayU SA** — TODO on hash field order. Incorrect hash = every request fails.
-8. ⚠️ **Cellulant** — TODO on KES amount units. Wrong units = failed transactions.
-9. ⚠️ **DPO Group** — TODO on amount units (major vs minor). Wrong units = failed transactions.
+1. ~~🔑 **Squad** — Real-looking sandbox API key hardcoded in a curl example.~~ **FIXED (Round 1)**
+2. ~~❌ **PawaPay** — All endpoints missing the `/v2/` version prefix. Code will 404 as written.~~ **FIXED (Round 1)**
+3. ~~❌ **iKhokha** — Author left a TODO: production base URL is unknown.~~ **FIXED (Round 1)**
+4. ~~⚠️ **Flutterwave** — Covers only v3 API; v4 launched.~~ **FIXED (Round 1)**
+5. ~~⚠️ **Stitch** — TODO on auth method.~~ **FIXED (Round 1)**
+6. ~~⚠️ **Remita** — TODO on sandbox URL.~~ **FIXED (Round 1)**
+7. ~~⚠️ **PayU SA** — TODO on hash field order.~~ **FIXED (Round 1)**
+8. ~~⚠️ **Cellulant** — TODO on KES amount units.~~ **FIXED (Round 1)**
+9. ~~⚠️ **DPO Group** — TODO on amount units.~~ **FIXED (Round 1)**
 
 ---
 
@@ -889,7 +916,7 @@ This is a solid first draft from someone who clearly did real research. The qual
 - The collection is stronger on West Africa/Nigeria than other regions — East Africa and UEMOA providers have more gaps
 - Several obscure providers (JamboPay, NCBA Loop, Chipper Cash, MFS Africa) couldn't be verified due to no public documentation — those skills carry higher uncertainty
 
-**For public release:** Fix the 8 "Must Fix" items above. Everything else is acceptable as a launch state and can be iterated on. The collection provides genuine value even in its current form — there is real, synthesized knowledge here that would take a developer days to find independently.
+**For public release:** ~~Fix the 8 "Must Fix" items above.~~ **All critical items have been resolved in Rounds 1–7 (commits 7cf2d90 → 9600493).** The collection is ready for public release. The three providers with unavailable public documentation (JamboPay, Chipper Cash, MFS Africa/Onafriq) have been clearly marked with ⚠️ warnings inside the skills themselves. Ongoing maintenance recommended as APIs evolve.
 
 ---
 
