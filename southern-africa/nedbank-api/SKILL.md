@@ -55,6 +55,31 @@ The standard three-legged OAuth 2.0 flow is used for accessing customer-specific
 POST https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/token
 ```
 
+### PKCE (Proof Key for Code Exchange)
+
+Per RFC 7636 (and mandatory per RFC 9700 for public clients), the authorization code flow should be paired with PKCE. Generate a `code_verifier` (random string, 43–128 characters), hash it as `code_challenge`, and include in the authorization request:
+
+```bash
+# Authorization request (include these query params)
+code_challenge=BASE64URL(SHA256(code_verifier))
+code_challenge_method=S256
+
+# Token exchange (include code_verifier for server to verify)
+code_verifier=YOUR_RANDOM_VERIFIER_STRING
+```
+
+```javascript
+const crypto = require('crypto');
+
+function generatePKCE() {
+  const verifier = crypto.randomBytes(32).toString('base64url');
+  const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
+  return { verifier, challenge };
+}
+```
+
+Confirm PKCE support with Nedbank's API portal — check whether your app type (confidential server-side vs public SPA/mobile) requires PKCE in their current implementation.
+
 ### OAuth 2.0 Request Example
 
 ```bash
@@ -64,7 +89,8 @@ curl -X POST https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/token \
   -d "code=AUTH_CODE_FROM_REDIRECT" \
   -d "client_id=YOUR_CLIENT_ID" \
   -d "client_secret=YOUR_CLIENT_SECRET" \
-  -d "redirect_uri=YOUR_REDIRECT_URI"
+  -d "redirect_uri=YOUR_REDIRECT_URI" \
+  -d "code_verifier=YOUR_CODE_VERIFIER"
 ```
 
 ### Required OAuth 2.0 Scopes
@@ -970,6 +996,8 @@ async function callNebankAPI(url, options) {
 11. **PSD2 Compliance** - Nedbank's API Marketplace is PSD2-compliant for applicable APIs. This means specific transaction limits may apply, and Strong Customer Authentication (SCA) may be required for sensitive operations. Consult the PSD2 section of the documentation for your jurisdiction.
 
 12. **Data Retention and Privacy** - Customer data accessed through Nedbank APIs is governed by South African data protection laws and Nedbank's privacy policy. Only request and retain necessary data, obtain explicit consent for data usage, and securely store credentials and access tokens.
+
+13. **Additional Products Not Documented Here** - Nedbank's API Marketplace includes products beyond what this skill covers: **InstantMoney** (voucher-based cash transfers without a bank account) and **MobiMoney** (mobile wallet). These newer products have separate API endpoints and flows. Check https://apim.nedbank.co.za/static/products for the full API catalogue and request access through the portal.
 
 ## Useful Links
 

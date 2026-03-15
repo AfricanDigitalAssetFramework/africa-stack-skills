@@ -719,6 +719,8 @@ async function handleOnePipeError(error, transaction) {
 
 5. **Provider Routing Must Be Configured**: While OnePipe abstracts multiple providers (Polaris, SunTrust, Fidelity, Providus, Flutterwave, Paystack), your integration must specify which provider to route to. This is usually handled via environment configuration provided by the integration team rather than per-request parameters.
 
+5a. **⚠️ PAYLOAD SHAPES VARY PER PROVIDER AND REQUEST TYPE**: The `POST /transact` request body shown in this skill is a representative template. The exact fields inside `transaction.meta` and `transaction.details` change significantly depending on the `request_type` and the underlying provider being routed to. For example, account debit to Polaris Bank requires different meta fields than the same operation via Providus. **Always use the Postman collection provided by the OnePipe integration team as the authoritative source for payload schemas.** Do not assume the generic template will work without provider-specific configuration.
+
 6. **Webhooks May Be Delayed**: Webhook delivery is not guaranteed to be immediate. Transaction status should be verified via polling the `/transact/query` endpoint rather than relying solely on webhooks. Implement both webhook handling AND periodic polling for critical operations.
 
 7. **Account Opening Has Prerequisites**: The `open_account` endpoint requires customer identity verification (NIN/BVN lookup) before account creation in most cases. Verify identity first, then create accounts. Some banks may have additional KYC requirements that delay account activation.

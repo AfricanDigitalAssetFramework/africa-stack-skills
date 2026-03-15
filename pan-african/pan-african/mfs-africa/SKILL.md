@@ -433,6 +433,22 @@ Onafriq returns consistent error responses:
 
 ## Important Notes / Gotchas
 
+> **⚠️ UNVERIFIED ENDPOINTS — No Public Documentation Available**
+>
+> Onafriq (formerly MFS Africa) does not maintain a public API documentation portal. The endpoint paths, request/response shapes, and authentication mechanisms documented in this skill are based on reported integrations and community knowledge, **not official documentation**. Treat all endpoint paths as unverified. Always request official API documentation from your Onafriq account representative before production use.
+
+> **⚠️ COMMERCIAL PARTNERSHIP REQUIRED**
+>
+> Onafriq API access requires a signed commercial partnership agreement. This is not a self-service integration — you must contact Onafriq via https://www.onafriq.com/ and complete their enterprise onboarding process. Expect a sales and compliance review before receiving credentials.
+
+> **⚠️ TWO SEPARATE API SURFACES: Beyonic vs Onafriq Hub**
+>
+> The base URLs documented here reflect two different products:
+> - `https://api.mfsafrica.com/api` — the Onafriq domestic payments API
+> - `https://mfsafrica.beyonicpartners.com/api` — the Beyonic-based cross-border API (Onafriq acquired Beyonic in 2021)
+>
+> These are **different systems** with different capabilities, coverage, and response schemas. Confirm with your Onafriq contact which API surface applies to your use case. Do not assume these APIs are interchangeable.
+
 ### Rebrand: MFS Africa → Onafriq
 
 MFS Africa rebranded to **Onafriq** in November 2023. The company name changed but the API endpoints, base URLs, and core functionality remain the same. Documentation and dashboards now reference "Onafriq" but some legacy references to "MFS Africa" may still exist. Both names refer to the same service.

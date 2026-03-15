@@ -721,6 +721,10 @@ const amountInPiasters = 500 * 100; // 50000
 - Never expose merchant hash in client-side code
 - Rotate merchant hash periodically for security
 
+> **⚠️ SIGNATURE ORDER — VERIFY WITH COWPAY**
+>
+> Cowpay's signature algorithm concatenates fields in a non-standard order and their public documentation is limited. The order documented above (`merchant_code + merchant_reference_id + customer_id + payment_method + amount + merchant_hash`) is based on reported integrations. If signatures fail validation, **contact Cowpay's integration team** to confirm the exact concatenation order and whether it differs per payment method (Fawry vs card vs COD). Wrong field order = signature mismatch on every request.
+
 ### Merchant Reference Numbers
 - Must be **unique per transaction**
 - Use format: `ORD-{TIMESTAMP}-{RANDOM}` to ensure uniqueness

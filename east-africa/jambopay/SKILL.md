@@ -515,6 +515,10 @@ async function makeJamboPayRequest(endpoint, body, retries = 3) {
 
 ## Important Notes and Gotchas
 
+> **⚠️ LIMITED PUBLIC DOCUMENTATION**
+>
+> JamboPay's API documentation is not fully public. The developer reference at `https://backoffice.jambopay.com/developer.aspx` requires a merchant account to access. The endpoint paths, authentication flows, and request/response schemas documented in this skill are based on reported integrations and available community resources. Treat all endpoint paths as indicative rather than guaranteed — contact JamboPay's integration team (via jambopay.com or your account manager) to obtain official, up-to-date API documentation before production deployment.
+
 1. **Bearer Token Expiration**: Access tokens expire after a set duration (typically 1 hour). Implement token refresh logic or request new tokens for each batch of requests. Store tokens securely and never expose them to the client-side.
 
 2. **Callback URL Must Be Publicly Accessible**: Your callback URL must be accessible from JamboPay's servers. If you're testing locally, use tunneling tools like ngrok to expose your localhost to the internet. Avoid using private IP addresses or localhost URLs.

@@ -337,6 +337,14 @@ Plus access to 40+ additional markets through partnerships and licensed corridor
 
 ## Important Notes & Gotchas
 
+> **⚠️ UNVERIFIED ENDPOINTS — No Public Documentation Available**
+>
+> Chipper Cash does not maintain a public API documentation portal. The endpoint paths, request/response shapes, and error codes documented in this skill are based on reported integrations and community knowledge, **not official documentation**. Treat all endpoint paths as unverified. Always request an official Postman collection or documentation package from Chipper's integration team during onboarding, and validate every endpoint before production use.
+
+> **⚠️ PRODUCT AND MARKET UNCERTAINTY**
+>
+> Chipper Cash has undergone multiple rounds of significant layoffs (2022–2024) and has exited several markets. The "40+ markets" claim may not reflect current supported corridors. Verify active markets with the Chipper team before building. The Network API's long-term support commitment and product roadmap are uncertain. If building mission-critical infrastructure, consider fallback providers.
+
 **Consumer App vs. Network API:**
 - Chipper Cash app is primarily for peer-to-peer transfers between individuals
 - The Network API is the merchant/business product for accepting payments and sending payouts
