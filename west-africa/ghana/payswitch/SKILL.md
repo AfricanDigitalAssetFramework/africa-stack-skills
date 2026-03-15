@@ -40,6 +40,10 @@ Use PaySwitch/TheTeller when you need to:
 
 PaySwitch uses OAuth 2 for API authentication. Obtain a token by POSTing to the OAuth endpoint with your credentials.
 
+> ⚠️ **Domain naming clarification:** The PaySwitch sandbox/test environment uses the domain `try.payswitch.net`. Despite the name looking like a staging URL, `try.payswitch.net` is PaySwitch's official sandbox environment — not an unofficial mirror. The production domain is `api.payswitch.net`. Always use `try.payswitch.net` for testing and `api.payswitch.net` for live transactions.
+
+> ⚠️ **OAuth password grant:** PaySwitch uses the OAuth 2.0 Resource Owner Password Credentials Grant (`grant_type: "password"`) — you submit your email and password directly to obtain a token. This grant type is deprecated in OAuth 2.1 and considered a security anti-pattern because it requires sending your credentials on every token request. However, it is PaySwitch's documented auth flow and there is currently no alternative. Store the token securely and do not log it. Token expiry is 3600 seconds (1 hour) — implement refresh logic before expiry.
+
 **Endpoint:** `POST https://try.payswitch.net/oauth/token`
 
 **Request:**

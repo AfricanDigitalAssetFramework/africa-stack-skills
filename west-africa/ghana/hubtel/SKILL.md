@@ -33,12 +33,16 @@ Hubtel uses **HTTP Basic Authentication** for all API requests. You must provide
 
 ### Getting API Credentials
 
-1. Create a Hubtel Merchant Account by contacting [support@hubtel.com](mailto:support@hubtel.com)
-2. Log in to your merchant dashboard at [https://unity.hubtel.com/merchantaccount/dashboard](https://unity.hubtel.com/merchantaccount/dashboard)
+> ℹ️ **Self-service signup now available.** Hubtel has introduced self-service merchant registration at [https://unity.hubtel.com](https://unity.hubtel.com). You can create an account and generate API keys without needing to email support, though full activation for live transactions still requires business verification.
+
+1. Register at [https://unity.hubtel.com](https://unity.hubtel.com) or contact [support@hubtel.com](mailto:support@hubtel.com) for enterprise onboarding
+2. Log in to your merchant dashboard at [https://unity.hubtel.com](https://unity.hubtel.com)
 3. Navigate to API accounts section and select "Request For New API Keys"
 4. Choose "HTTP Rest API" as the API type
 5. Provide a description for your application
 6. Save and your **ClientID**, **ClientSecret**, and **Account Number** will be displayed
+
+> ⚠️ **API versioning note:** Hubtel has been reorganising their API ecosystem. The primary collection/disbursement API currently documents at `payproxyapi.hubtel.com`, while newer endpoints may appear under `api.hubtel.com/v2/`. If you encounter 404s on the paths documented here, check the [Hubtel developer portal](https://developers.hubtel.com) for the current base URLs — they have been updated without redirect in past migrations.
 
 ### Authentication Header Format
 
@@ -567,6 +571,36 @@ async function verifyTransactionStatus(transactionId, clientReference) {
   return result;
 }
 ```
+
+## USSD Product
+
+Hubtel's USSD product enables you to build interactive USSD menus accessible by any mobile user in Ghana via shortcodes (e.g. `*714#`). Works without internet on any handset — widely used for mobile money flows, service menus, and payment prompts.
+
+### USSD Webhook Payload (Hubtel → your server)
+```json
+{
+  "Mobile": "233241234567",
+  "SessionId": "ATUid_abc123",
+  "ServiceCode": "*714*100#",
+  "Type": "Initiation",
+  "Message": "",
+  "Operator": "MTN",
+  "Sequence": 1
+}
+```
+- `Type`: `Initiation` (first menu), `Response` (customer replied), `Release` (session ended), `Timeout`
+- `Message`: what the customer typed in response to your previous menu
+
+### USSD Response Format (your server → Hubtel)
+```json
+{
+  "Type": "Response",
+  "Message": "Welcome to MyService\n1. Check Balance\n2. Pay Bill\n3. Exit"
+}
+```
+To end the session: `"Type": "Release"`. Customer sees the final message and session closes.
+
+> Contact Hubtel to be assigned a USSD shortcode. Shared shortcodes (sub-menus of `*714#`) are available for quick onboarding; dedicated shortcodes require licensing from Ghana's NCA.
 
 ## Error Handling
 
