@@ -5,6 +5,14 @@ description: "Integrate with Interswitch APIs for payment processing, transfers,
 
 # Interswitch Integration Skill
 
+> ⚠️ **Product scope:** Interswitch operates a multi-product ecosystem — Quickteller Business, WebPay, ISW Pay, Passport, and Open Banking APIs. This skill covers the **Quickteller Business / WebPay merchant payment collection and disbursement APIs**. Other products have separate documentation and credentials at [developer.interswitchgroup.com](https://developer.interswitchgroup.com).
+
+> ⚠️ **Partnership access required.** Interswitch is not self-service. Apply at [developer.interswitchgroup.com](https://developer.interswitchgroup.com) or via an Interswitch sales contact. Allow 1–3 weeks for onboarding. Sandbox access is granted separately from production.
+
+> ⚠️ **Verify HMAC signature format during onboarding.** The signature formula documented here (`Base64(HMAC-SHA256(clientId:timestamp:nonce:targetUrl, clientSecret))`) follows available documentation but may vary by product version. Confirm the exact concatenation order using test tools in your Interswitch developer dashboard before going live.
+
+> ℹ️ **Developer portal updated (2024–2025).** Interswitch has significantly updated their portal. Some legacy endpoint paths may have been deprecated. If an endpoint returns 404, check [developer.interswitchgroup.com](https://developer.interswitchgroup.com) for the current path.
+
 Interswitch is Africa's largest payments switching and settlement infrastructure provider, operating a network connecting 3,000+ merchants, all major Nigerian banks, mobile operators, and utility service providers. The platform enables developers to build scalable payment solutions with unified APIs for transfers, collections, bill payments, and transaction management.
 
 ## When to use this skill
