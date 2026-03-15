@@ -21,6 +21,10 @@ PayFast uses merchant credentials and signature-based authentication for securit
 - **Passphrase:** Optional PayFast passphrase (set in dashboard security settings)
 - **API Signature:** MD5 or SHA256 HMAC signature for request verification
 
+> ⚠️ **Use SHA256 for new integrations, not MD5.** PayFast supports both MD5 (legacy) and SHA256 (recommended). MD5 is documented first because it's most common in older integrations, but SHA256 is significantly more secure. For new integrations, use SHA256 throughout. PayFast's ITN (Instant Transaction Notification) verification should always use SHA256.
+
+> ℹ️ **Rebrand note:** PayFast was acquired by Network International in 2023. The product continues to operate as "PayFast by Network International." API endpoints and credentials are unchanged, but support channels, contracts, and billing may route through Network International for new merchants.
+
 Store credentials in environment variables: `PAYFAST_MERCHANT_ID`, `PAYFAST_MERCHANT_KEY`, and `PAYFAST_PASSPHRASE`. Never hardcode credentials.
 
 **Environments:**

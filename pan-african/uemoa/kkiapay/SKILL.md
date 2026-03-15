@@ -74,6 +74,36 @@ $k = new Kkiapay([
 - Rotate keys periodically through the KKiaPay dashboard
 - Always use HTTPS for API communications
 
+## REST API Base URL
+
+While KKiaPay is primarily used via their JavaScript widget and official SDKs, the underlying REST API can be called directly:
+
+| Environment | Base URL |
+|-------------|----------|
+| **Production** | `https://api.kkiapay.me/v1` |
+| **Sandbox** | `https://sandbox-api.kkiapay.me/v1` |
+
+**Authentication for direct REST calls:** Include your private key in the `X-Private-Key` header. Example:
+
+```bash
+curl -X GET https://api.kkiapay.me/v1/transactions/txn_abc123456789 \
+  -H "X-Private-Key: your_private_key"
+```
+
+## Transaction Status Values
+
+When verifying a transaction (via SDK or REST), the `status` field returns one of:
+
+| Status | Meaning |
+|--------|---------|
+| `COMPLETE` | Payment successfully completed |
+| `FAILED` | Payment failed (see `failureCode` for reason) |
+| `PENDING` | Payment initiated but not yet completed — poll again |
+| `REFUNDED` | Payment was successfully refunded |
+| `CANCELLED` | Transaction was cancelled before completion |
+
+Common `failureCode` values: `insufficient_fund`, `wrong_pin`, `timeout`, `cancelled_by_user`, `network_error`.
+
 ## Core API Reference
 
 ### Transaction Endpoints

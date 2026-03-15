@@ -35,7 +35,7 @@ Never hardcode credentials. Retrieve API credentials from your Peach Payments Da
 
 **Base URL (Production):** `https://api.peachpayments.com/v1`
 
-**Base URL (Sandbox Testing):** Refer to your dashboard for the sandbox API base URL. Use sandbox for testing before going live.
+**Base URL (Sandbox Testing):** `https://eu-test.oppwa.com` (legacy/common sandbox backend used by Peach Payments) or the Peach-specific sandbox URL provided in your merchant dashboard. Peach Payments has been migrating from the legacy `oppwa.com` infrastructure — if your dashboard provides a specific sandbox URL, prefer that over `eu-test.oppwa.com`. Test credentials are also available in your dashboard.
 
 ## Core API Reference
 

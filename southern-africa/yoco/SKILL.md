@@ -29,6 +29,10 @@ Store your secret key securely in an environment variable like `YOCO_SECRET_KEY`
 - Live: `https://api.yoco.com`
 - Sandbox: `https://api.yocosandbox.com`
 
+> ℹ️ **Two hostnames — why they both exist.** Yoco uses two different base URLs depending on the operation: `https://api.yoco.com` for account/transaction management (e.g. fetching transaction details, refunds), and `https://payments.yoco.com` for initiating checkouts and retrieving checkout status. This is intentional — the payments domain handles the checkout flow; the api domain handles merchant account operations. Both require the same Bearer token for auth.
+
+> ℹ️ **OAuth 2.0 support.** In addition to static API keys, Yoco's updated developer hub (yoco.docs.buildwithfern.com) now documents OAuth 2.0 authentication. If you're building a multi-merchant platform or need on-behalf-of access, use OAuth 2.0. For single-merchant integrations, API key auth is simpler and sufficient.
+
 **Important:** Live API keys will not work against the sandbox environment and vice versa.
 
 ## Core API Reference

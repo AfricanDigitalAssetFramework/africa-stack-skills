@@ -24,12 +24,28 @@ Wave is a Senegal-based mobile money platform providing business APIs for paymen
 - **Business Integration**: Accept mobile money payments with native API integration
 - **Multi-Country Expansion**: Expand across West African markets with single API
 
+## Country and Currency Coverage
+
+Not all Wave products are available in all markets. Reference the table below:
+
+| Country | Currency | Checkout API | Payout API | Balance API |
+|---------|----------|-------------|------------|-------------|
+| 🇸🇳 Senegal | XOF | ✅ | ✅ | ✅ |
+| 🇨🇮 Côte d'Ivoire | XOF | ✅ | ✅ | ✅ |
+| 🇲🇱 Mali | XOF | ✅ | ✅ | ✅ |
+| 🇧🇫 Burkina Faso | XOF | ✅ | ✅ | ✅ |
+| 🇬🇲 The Gambia | GMD | ✅ | ⚠️ Limited | ✅ |
+
+> ⚠️ **GMD (Gambian Dalasi):** The Gambia uses `"GMD"` as the currency code — NOT `"XOF"`. Passing `"XOF"` for Gambian customers will fail. The API key for Gambia is issued separately from UEMOA-region keys. Contact Wave to enable GMD on your account.
+
+> ⚠️ **Onboarding barrier — Senegal business registration required.** Wave's Business Portal signup at `business.wave.com` requires a **Senegal-registered business phone number** to complete account creation. If you are an international developer or a non-Senegalese company, you will not be able to self-register. You must either (1) partner with a Senegalese registered business, (2) contact Wave directly at business@wave.com for enterprise onboarding, or (3) use a Wave-connected aggregator (e.g. Flutterwave or CinetPay) which may offer Wave as a channel without requiring a direct Wave account.
+
 ## Authentication
 
 ### API Key Setup
 
 1. Log into the [Wave Business Portal](https://business.wave.com)
-2. Navigate to Developer section (Admin access required)
+2. Navigate to Developer section (Admin access required — requires Senegal-registered business phone number; see onboarding note above)
 3. Create and manage API keys
 4. Each key is bound to a single business wallet
 5. Define specific API access per key (Checkout, Payout, Balance)
@@ -490,6 +506,51 @@ while true; do
   sleep 3600
 done
 ```
+
+## B2B Payment Request Flow
+
+Wave supports business-to-business payment requests — you send a payment request to another Wave business wallet, and they approve it from their Wave app. This is distinct from the checkout (C2B) and payout (B2C) flows.
+
+### Create a B2B Payment Request
+```bash
+POST https://api.wave.com/v1/business-payment-requests
+Authorization: Bearer wave_sn_prod_YOUR_API_KEY
+Content-Type: application/json
+
+{
+  "amount": "50000",
+  "currency": "XOF",
+  "payment_from_business_id": "wbiz_target_business_id",
+  "short_description": "Invoice #INV-2024-047 — Services rendered February 2024",
+  "client_reference": "INV-2024-047"
+}
+```
+
+`payment_from_business_id` is the Wave Business ID of the business you're requesting payment from — they must be a registered Wave business with an active business wallet.
+
+**Response:**
+```json
+{
+  "id": "wbpr_xxxxxxxxxxxx",
+  "status": "pending",
+  "amount": "50000",
+  "currency": "XOF",
+  "payment_from_business_id": "wbiz_target_business_id",
+  "short_description": "Invoice #INV-2024-047",
+  "created_at": "2024-02-24T11:00:00Z",
+  "expires_at": "2024-02-25T11:00:00Z"
+}
+```
+
+The receiving business gets a notification in their Wave app. They can approve or decline. Wave fires a webhook to your endpoint when the status changes.
+
+### Get B2B Payment Request Status
+```bash
+GET https://api.wave.com/v1/business-payment-requests/{id}
+Authorization: Bearer wave_sn_prod_YOUR_API_KEY
+```
+
+**Status values:** `pending` → `completed` or `declined` or `expired`
 
 ## Error Handling
 
