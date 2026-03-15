@@ -5,6 +5,10 @@ description: Integrate with Equity Bank's Jenga API for payments, transfers, acc
 
 # Equity Bank Jenga API Integration Skill
 
+> ⚠️ **Partner/Enterprise Access Only.** The Jenga API is not publicly self-service. Access requires manual onboarding through Equity Bank's partner program — apply via [finserve.africa](https://finserve.africa) or contact your Equity Bank relationship manager. Expect a 2–6 week approval process including business verification and legal agreements. There is no sandbox self-signup.
+
+> ⚠️ **RSA Request Signing.** In addition to Bearer token authentication, some Jenga API endpoints require RSA digital signature of the request body. You sign a hash of the request payload using your RSA private key (RS256), and include the signature in the `Signature` header. Ensure you handle this during onboarding — Equity Bank provides your keypair as part of the partner onboarding process.
+
 Equity Bank's Jenga API is a comprehensive fintech platform providing access to banking and payment services across East Africa. It enables developers to build payment applications, fintech solutions, and banking integrations with support for remittances, account management, real-time payments, and transaction history queries.
 
 ## When to use this skill
@@ -393,7 +397,13 @@ Api-Key: {your_api_key}
 
 **Supported Banks:** All KBA (Kenya Bankers Association) member banks plus mobile money providers.
 
-<!-- TODO: verify bank code format — Jenga uses bank sort codes, not CBK codes; use GET /v3-apis/bank-api/v3.0/banks endpoint (if available) to resolve correct codes at integration time -->
+> ⚠️ **Bank code format:** Jenga uses Kenyan bank **sort codes** (not CBK codes). These are different from the 3-digit codes used by other Kenyan APIs. Always resolve bank codes dynamically at integration time using:
+> ```
+> GET /v3-apis/bank-api/v3.0/banks
+> Authorization: Bearer {accessToken}
+> Api-Key: {your_api_key}
+> ```
+> Do not hardcode bank codes — they can change. Fetch the list once and cache it, refreshing periodically.
 
 Processing time: Usually within 1-2 hours.
 

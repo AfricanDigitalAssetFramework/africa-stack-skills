@@ -47,6 +47,12 @@ Obtain from your iPay merchant dashboard:
 
 The hash is computed from a **concatenated datastring** of parameters in strict order, using HMAC-SHA256 with your secret key. Parameter order is critical and varies by endpoint.
 
+> ⚠️ **HMAC parameter order varies by flow.** The C2B collection and B2C disbursement APIs use different parameter concatenation orders. Using the C2B hash logic for a B2C request (or vice versa) will result in all requests being rejected with a signature error. Always refer to the endpoint-specific documentation at [dev.ipayafrica.com](https://dev.ipayafrica.com) for the exact field order for each API type.
+
+> ⚠️ **B2C disbursements have separate authentication.** The B2C payout API (sending money to customers' mobile wallets) uses a different API key and may require separate merchant activation. Contact iPay support (support@ipayafrica.com) to enable B2C on your account — it is not automatically enabled with C2B access.
+
+> ℹ️ **C2B integration: API vs form redirect.** iPay supports two C2B integration models: (1) **API-initiated** — your server calls the iPay API to initiate STK push or USSD; (2) **Form redirect** — you POST an HTML form to the iPay checkout page and the customer completes payment there. The form redirect model does not require HMAC on the frontend, but your backend callback verification must still validate the iPay response signature. Choose API-initiated for embedded UX; form redirect for quickest integration.
+
 #### C2B Transaction Registration Example (PHP)
 
 ```php

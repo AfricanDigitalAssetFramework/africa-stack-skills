@@ -5,6 +5,12 @@ description: "Integrate with NCBA Loop digital banking API for account managemen
 
 # NCBA Loop Integration Skill
 
+> ⚠️ **Access and documentation:** NCBA Loop documentation is not publicly accessible without a developer account. Apply via [loop.ncbagroup.com](https://loop.ncbagroup.com) or through NCBA's corporate banking team. Budget 2–4 weeks for activation.
+
+> ⚠️ **Dual authentication required.** NCBA Loop uses both OAuth 2.0 Bearer tokens AND an API key (`x-api-key` header) on every request. Missing either will result in 401 errors. Some endpoints may additionally require the API key to be embedded in the request body — confirm with NCBA documentation during onboarding.
+
+> ⚠️ **Domain uncertainty.** NCBA has undergone multiple rebrands (CBA + NIC → NCBA; Loop product variants). The base URLs documented here (`api.loop.ncbagroup.com`, `sandbox-api.loop.ncbagroup.com`) follow the expected pattern but should be confirmed against credentials provided during onboarding — do not assume these are stable.
+
 NCBA Loop is the digital banking API platform from NCBA Group (National Commercial Bank of Africa), a leading pan-African banking institution. It enables developers to integrate account information retrieval, payments, transfers, and transaction history into their applications with enterprise-grade security and reliability. NCBA Loop provides open banking capabilities across Kenya, Uganda, Tanzania, and Rwanda.
 
 ## When to use this skill
@@ -372,7 +378,7 @@ Content-Type: application/json
 109 - Mwalimu National SACCO
 110 - Nairobi City SACCO
 ```
-<!-- TODO: verify these bank codes against the NCBA Loop bank lookup endpoint or CBK list — Kenyan sort codes differ from CBK institution codes; confirm with NCBA support before using in production -->
+> ⚠️ **Bank codes need verification before production use.** The codes in the table above are based on common Kenyan sort codes but have not been independently confirmed against NCBA Loop's own bank registry. Kenyan sort codes can differ from CBK institution codes. Before going live, resolve bank codes dynamically via the NCBA Loop bank lookup endpoint (check their developer documentation) or confirm the exact codes with NCBA Loop support. Using an incorrect bank code will result in failed or misdirected transfers.
 
 ### Transaction History
 
